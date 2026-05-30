@@ -161,13 +161,45 @@
 
 /* Montseguro globals */
 .ms-root {
-  background-color: var(--ms-navy);
-  color: var(--ms-text-main);
+  /* themable surface tokens — default = dark */
+  --ms-bg: #0D1B2A;
+  --ms-surface: #122236;
+  --ms-surface-2: #1E3048;
+  --ms-text: #E2EDF7;
+  --ms-muted: #8FAABE;
+  --ms-border: rgba(255, 255, 255, 0.08);
+  --ms-overlay: rgba(255, 255, 255, 0.05);
+  --ms-overlay-strong: rgba(255, 255, 255, 0.18);
+  --ms-row: #0D1B2A;
+  --ms-row-alt: #0f1e30;
+  --ms-particle: #ffffff;
+  --ms-photo-fade: rgba(13, 27, 42, 0.88);
+  --ms-header-bg: rgba(13, 27, 42, 0.85);
+
+  background-color: var(--ms-bg);
+  color: var(--ms-text);
   font-family: "DM Sans", system-ui, sans-serif;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
 }
+
+.ms-root[data-theme="light"] {
+  --ms-bg: #F4F6FA;
+  --ms-surface: #FFFFFF;
+  --ms-surface-2: #E3EAF2;
+  --ms-text: #0D1B2A;
+  --ms-muted: #5A6B7E;
+  --ms-border: rgba(13, 27, 42, 0.10);
+  --ms-overlay: rgba(13, 27, 42, 0.05);
+  --ms-overlay-strong: rgba(13, 27, 42, 0.18);
+  --ms-row: #FFFFFF;
+  --ms-row-alt: #F0F4F9;
+  --ms-particle: #0D1B2A;
+  --ms-photo-fade: rgba(255, 255, 255, 0.92);
+  --ms-header-bg: rgba(244, 246, 250, 0.88);
+}
+
 .ms-display { font-family: "Barlow Condensed", system-ui, sans-serif; }
 
 .ms-grain::before {
@@ -188,7 +220,7 @@
 .ms-particle {
   position: absolute;
   border-radius: 9999px;
-  background: var(--ms-text-main);
+  background: var(--ms-particle);
   animation: ms-float 8s ease-in-out infinite;
   pointer-events: none;
 }
