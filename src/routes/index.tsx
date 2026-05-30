@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown, Medal, Award } from "lucide-react";
+import { Crown, Medal, Award, Sun, Moon } from "lucide-react";
 import { PhotoUpload } from "@/components/montseguro/PhotoCard";
 import { useCounter } from "@/components/montseguro/Counter";
 import {
@@ -26,15 +26,15 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const NAVY = "#0D1B2A";
-const NAVY_MID = "#122236";
-const NAVY_LIGHT = "#1E3048";
+const NAVY = "var(--ms-bg)";
+const NAVY_MID = "var(--ms-surface)";
+const NAVY_LIGHT = "var(--ms-surface-2)";
 const RED = "#E63946";
 const GOLD = "#F4A261";
 const TEAL = "#2EC4B6";
 const VIOLET = "#7B5EA7";
-const MUTED = "#8FAABE";
-const TEXT = "#E2EDF7";
+const MUTED = "var(--ms-muted)";
+const TEXT = "var(--ms-text)";
 const GOLD_CROWN = "#FFD700";
 const SILVER = "#C0C0C0";
 const BRONZE = "#CD7F32";
@@ -45,7 +45,7 @@ const teamColor: Record<Team, string> = {
   "Bells Club": TEAL,
 };
 
-function Header() {
+function Header({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
   const today = new Date().toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",
@@ -54,7 +54,7 @@ function Header() {
   return (
     <header
       className="sticky top-0 z-30 backdrop-blur-md"
-      style={{ background: "rgba(13,27,42,0.85)", borderBottom: `1px solid ${NAVY_LIGHT}` }}
+      style={{ background: "var(--ms-header-bg)", borderBottom: `1px solid ${NAVY_LIGHT}` }}
     >
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-5">
         <div className="flex items-baseline gap-6">
@@ -69,8 +69,23 @@ function Header() {
             Performance Hub · 2026
           </div>
         </div>
-        <div className="ms-display text-[13px] uppercase tracking-widest" style={{ color: MUTED }}>
-          {today}
+        <div className="flex items-center gap-5">
+          <div className="ms-display text-[13px] uppercase tracking-widest" style={{ color: MUTED }}>
+            {today}
+          </div>
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            aria-label="Alternar tema"
+            className="grid h-9 w-9 place-items-center rounded-full transition-all hover:scale-105"
+            style={{
+              background: "var(--ms-overlay)",
+              border: `1px solid ${NAVY_LIGHT}`,
+              color: TEXT,
+            }}
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
         </div>
       </div>
       <div style={{ height: 4, background: RED }} />
@@ -126,7 +141,7 @@ function Tabs({
 }) {
   const opts: { id: "maio" | "junho"; label: string }[] = [
     { id: "maio", label: "Resultado Geral — Maio 2026" },
-    { id: "junho", label: "Metas — Junho 2026" },
+    { id: "junho", label: "Demandas — Junho 2026" },
   ];
   return (
     <div className="mx-auto mt-8 flex max-w-[1400px] gap-3 px-8">
@@ -140,8 +155,47 @@ function Tabs({
             style={{
               background: active ? RED : "transparent",
               color: active ? "#fff" : MUTED,
-              border: active ? "1px solid transparent" : "1px solid rgba(255,255,255,0.18)",
+              border: active ? "1px solid transparent" : `1px solid ${NAVY_LIGHT}`,
               boxShadow: active ? "0 0 24px rgba(230,57,70,0.35)" : "none",
+            }}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function SubTabs<T extends string>({
+  value,
+  onChange,
+  opts,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  opts: { id: T; label: string }[];
+}) {
+  return (
+    <div
+      className="mb-10 flex flex-wrap gap-2 rounded-full p-1.5"
+      style={{
+        background: NAVY_MID,
+        border: `1px solid ${NAVY_LIGHT}`,
+        width: "fit-content",
+      }}
+    >
+      {opts.map((o) => {
+        const active = value === o.id;
+        return (
+          <button
+            key={o.id}
+            onClick={() => onChange(o.id)}
+            className="ms-display rounded-full px-5 py-2 text-[12px] font-semibold uppercase tracking-wider transition-all"
+            style={{
+              background: active ? RED : "transparent",
+              color: active ? "#fff" : MUTED,
+              boxShadow: active ? "0 0 18px rgba(230,57,70,0.30)" : "none",
             }}
           >
             {o.label}
@@ -182,7 +236,7 @@ function KpiCard({
       className="relative overflow-hidden rounded-2xl px-6 py-5"
       style={{
         background: NAVY_MID,
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: `1px solid ${NAVY_LIGHT}`,
         borderLeft: `4px solid ${accent}`,
       }}
     >
@@ -203,7 +257,7 @@ function KpiCard({
 }
 
 function barColor(c: Consultant) {
-  if (c.percent === 0) return "rgba(255,255,255,0.1)";
+  if (c.percent === 0) return "var(--ms-overlay-strong)";
   if (c.rank === 1) return GOLD_CROWN;
   if (c.rank === 2) return SILVER;
   if (c.rank === 3) return BRONZE;
@@ -247,7 +301,7 @@ function PodiumCard({
           className="ms-display absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-extrabold"
           style={{
             background: borderColor,
-            color: NAVY,
+            color: "#0D1B2A",
           }}
         >
           <Icon size={13} />
@@ -264,7 +318,7 @@ function PodiumCard({
         </div>
         <div className="mt-3 space-y-1.5 text-[12px]">
           <div className="flex items-center justify-between">
-            <span style={{ color: MUTED }}>Meta</span>
+            <span style={{ color: MUTED }}>Demanda</span>
             <span className="ms-display font-semibold" style={{ color: TEXT }}>
               {fmtBRLcompact(consultant.meta)}
             </span>
@@ -279,7 +333,7 @@ function PodiumCard({
         <div className="mt-3">
           <div
             className="relative h-2 overflow-hidden rounded-full"
-            style={{ background: "rgba(255,255,255,0.08)" }}
+            style={{ background: "var(--ms-overlay)" }}
           >
             <motion.div
               initial={{ width: 0 }}
@@ -362,7 +416,7 @@ function HorizontalBars({ rows }: { rows: Consultant[] }) {
             </div>
             <div
               className="relative h-3 overflow-hidden rounded-full"
-              style={{ background: "rgba(255,255,255,0.05)" }}
+              style={{ background: "var(--ms-overlay)" }}
             >
               <motion.div
                 initial={{ width: 0 }}
@@ -391,7 +445,7 @@ function HorizontalBars({ rows }: { rows: Consultant[] }) {
 function PercentBadge({ pct }: { pct: number }) {
   const [bg, fg] =
     pct === 0
-      ? ["rgba(255,255,255,0.06)", MUTED]
+      ? ["var(--ms-overlay)", MUTED]
       : pct >= 80
       ? ["rgba(46,196,182,0.12)", TEAL]
       : pct >= 50
@@ -421,11 +475,11 @@ function ResultsTable({ rows }: { rows: Consultant[] }) {
   const totalPct = Math.round((totals.delivered / totals.meta) * 100);
 
   return (
-    <div className="overflow-x-auto rounded-2xl" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div className="overflow-x-auto rounded-2xl" style={{ border: `1px solid ${NAVY_LIGHT}` }}>
       <table className="w-full min-w-[900px] border-collapse text-[13px]">
         <thead>
           <tr style={{ background: NAVY_MID }}>
-            {["#", "Consultor", "Meta", "Entregue", "Contratos", "Leads", "Conv.", "Restante", "%"].map((h) => (
+            {["#", "Consultor", "Demanda", "Entregue", "Contratos", "Leads", "Conv.", "Restante", "%"].map((h) => (
               <th
                 key={h}
                 className="ms-display px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider"
@@ -443,8 +497,8 @@ function ResultsTable({ rows }: { rows: Consultant[] }) {
             return (
               <tr
                 key={r.rank}
-                className="transition-colors hover:bg-white/[0.03]"
-                style={{ background: i % 2 ? "#0f1e30" : NAVY }}
+                className="transition-colors"
+                style={{ background: i % 2 ? "var(--ms-row-alt)" : "var(--ms-row)" }}
               >
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
@@ -516,6 +570,7 @@ function SectionTitle({ children, kicker }: { children: React.ReactNode; kicker?
 }
 
 function MayTab() {
+  const [sub, setSub] = useState<"podio" | "ranking" | "tabela">("podio");
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -525,8 +580,8 @@ function MayTab() {
     >
       {/* KPI strip */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Demanda Total" value={303000} hint="Meta acumulada" accent={RED} delay={0} />
-        <KpiCard label="Demanda Entregue" value={182372} hint="60% da meta" accent={TEAL} delay={0.08} />
+        <KpiCard label="Demanda Total" value={303000} hint="Demanda acumulada" accent={RED} delay={0} />
+        <KpiCard label="Demanda Entregue" value={182372} hint="60% da demanda" accent={TEAL} delay={0.08} />
         <KpiCard
           label="Contratos · Conv."
           value={76}
@@ -539,39 +594,64 @@ function MayTab() {
         <KpiCard label="Ticket Médio" value={2400} hint="Média geral" accent={VIOLET} delay={0.24} />
       </div>
 
-      {/* Podium */}
-      <div className="relative mt-16">
-        <Watermark />
-        <SectionTitle kicker="Top 3 · Maio">Pódio de Performance</SectionTitle>
-        <Podium rows={mayResults} />
+      <div className="mt-14">
+        <SubTabs
+          value={sub}
+          onChange={setSub}
+          opts={[
+            { id: "podio", label: "Pódio de Performance" },
+            { id: "ranking", label: "Ranking Completo" },
+            { id: "tabela", label: "Tabela de Resultado Completo" },
+          ]}
+        />
+
+        <AnimatePresence mode="wait">
+          {sub === "podio" && (
+            <motion.div
+              key="podio"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              <Watermark />
+              <SectionTitle kicker="Top 3 · Maio">Pódio de Performance</SectionTitle>
+              <Podium rows={mayResults} />
+            </motion.div>
+          )}
+
+          {sub === "ranking" && (
+            <motion.section
+              key="ranking"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+              className="relative rounded-2xl p-7"
+              style={{ background: NAVY_MID, border: `1px solid ${NAVY_LIGHT}` }}
+            >
+              <SectionTitle kicker="Ranking completo">
+                Performance Individual — Demanda Entregue vs. Prevista
+              </SectionTitle>
+              <HorizontalBars rows={mayResults} />
+            </motion.section>
+          )}
+
+          {sub === "tabela" && (
+            <motion.section
+              key="tabela"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SectionTitle kicker="Detalhamento">Tabela de Resultado Completo</SectionTitle>
+              <ResultsTable rows={mayResults} />
+            </motion.section>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Horizontal bars */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="relative mt-20 rounded-2xl p-7"
-        style={{ background: NAVY_MID, border: "1px solid rgba(255,255,255,0.08)" }}
-      >
-        <SectionTitle kicker="Ranking completo">
-          Performance Individual — Demanda Entregue vs. Meta
-        </SectionTitle>
-        <HorizontalBars rows={mayResults} />
-      </motion.section>
-
-      {/* Table */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="mt-12"
-      >
-        <SectionTitle kicker="Detalhamento">Tabela de Resultado Completo</SectionTitle>
-        <ResultsTable rows={mayResults} />
-      </motion.section>
     </motion.div>
   );
 }
@@ -623,7 +703,7 @@ function TeamCard({ team }: { team: Team }) {
       className="rounded-2xl p-6"
       style={{
         background: NAVY_MID,
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: `1px solid ${NAVY_LIGHT}`,
         borderTop: `4px solid ${color}`,
         boxShadow: `0 0 24px ${color}1f`,
       }}
@@ -641,7 +721,7 @@ function TeamCard({ team }: { team: Team }) {
           <li
             key={m.rank}
             className="flex items-center justify-between rounded-lg px-3 py-2"
-            style={{ background: "rgba(255,255,255,0.02)" }}
+            style={{ background: "var(--ms-overlay)" }}
           >
             <span className="ms-display text-[13px] font-semibold uppercase" style={{ color: TEXT }}>
               {m.name}
@@ -671,7 +751,7 @@ function GoalsBars({ rows }: { rows: Goal[] }) {
             </div>
             <div
               className="relative h-3 overflow-hidden rounded-full"
-              style={{ background: "rgba(255,255,255,0.05)" }}
+              style={{ background: "var(--ms-overlay)" }}
             >
               <motion.div
                 initial={{ width: 0 }}
@@ -696,11 +776,11 @@ function GoalsBars({ rows }: { rows: Goal[] }) {
 
 function GoalsTable({ rows }: { rows: Goal[] }) {
   return (
-    <div className="overflow-x-auto rounded-2xl" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div className="overflow-x-auto rounded-2xl" style={{ border: `1px solid ${NAVY_LIGHT}` }}>
       <table className="w-full min-w-[900px] border-collapse text-[13px]">
         <thead>
           <tr style={{ background: NAVY_MID }}>
-            {["#", "Prestador", "Nível", "Time", "Meta (Mês)", "Meta Contratos", "Meta Assinados"].map((h) => (
+            {["#", "Prestador", "Nível", "Time", "Demanda (Mês)", "Demanda Contratos", "Demanda Assinados"].map((h) => (
               <th
                 key={h}
                 className="ms-display px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider"
@@ -715,8 +795,8 @@ function GoalsTable({ rows }: { rows: Goal[] }) {
           {rows.map((g, i) => (
             <tr
               key={g.rank}
-              className="transition-colors hover:bg-white/[0.03]"
-              style={{ background: i % 2 ? "#0f1e30" : NAVY }}
+              className="transition-colors"
+              style={{ background: i % 2 ? "var(--ms-row-alt)" : "var(--ms-row)" }}
             >
               <td className="ms-display px-4 py-2.5 font-bold" style={{ color: TEXT }}>{g.rank}</td>
               <td className="ms-display px-4 py-2.5 font-semibold uppercase" style={{ color: TEXT }}>
@@ -740,6 +820,7 @@ function GoalsTable({ rows }: { rows: Goal[] }) {
 }
 
 function JuneTab() {
+  const [sub, setSub] = useState<"squads" | "dist" | "tabela">("squads");
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -748,9 +829,9 @@ function JuneTab() {
       className="mx-auto max-w-[1400px] px-8 py-10"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <KpiCard label="Meta Total Mês" value={296000} hint="18 prestadores" accent={TEAL} delay={0} />
+        <KpiCard label="Demanda Total Mês" value={296000} hint="18 prestadores" accent={TEAL} delay={0} />
         <KpiCard
-          label="Meta Contratos"
+          label="Demanda Contratos"
           value={150}
           hint="Range de entrega"
           accent={GOLD}
@@ -758,52 +839,83 @@ function JuneTab() {
           customDisplay="150 › 170"
           delay={0.08}
         />
-        <KpiCard label="Meta Assinados" value={384800} hint="Total alvo" accent={RED} delay={0.16} />
+        <KpiCard label="Demanda Assinados" value={384800} hint="Total alvo" accent={RED} delay={0.16} />
       </div>
 
-      <div className="relative mt-16">
-        <Watermark />
-        <SectionTitle kicker="Times · Junho">Squads de Performance</SectionTitle>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          <TeamCard team="Leões" />
-          <TeamCard team="Tubarões" />
-          <TeamCard team="Bells Club" />
-        </div>
+      <div className="mt-14">
+        <SubTabs
+          value={sub}
+          onChange={setSub}
+          opts={[
+            { id: "squads", label: "Squads de Performance" },
+            { id: "dist", label: "Distribuição de Demanda por Consultor" },
+            { id: "tabela", label: "Tabela de Demandas de Junho" },
+          ]}
+        />
+
+        <AnimatePresence mode="wait">
+          {sub === "squads" && (
+            <motion.div
+              key="squads"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              <Watermark />
+              <SectionTitle kicker="Times · Junho">Squads de Performance</SectionTitle>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                <TeamCard team="Leões" />
+                <TeamCard team="Tubarões" />
+                <TeamCard team="Bells Club" />
+              </div>
+            </motion.div>
+          )}
+
+          {sub === "dist" && (
+            <motion.section
+              key="dist"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+              className="relative rounded-2xl p-7"
+              style={{ background: NAVY_MID, border: `1px solid ${NAVY_LIGHT}` }}
+            >
+              <SectionTitle kicker="Demandas individuais">
+                Distribuição de Demanda por Consultor
+              </SectionTitle>
+              <GoalsBars rows={juneGoals} />
+            </motion.section>
+          )}
+
+          {sub === "tabela" && (
+            <motion.section
+              key="tabela"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SectionTitle kicker="Detalhamento">Tabela de Demandas — Junho</SectionTitle>
+              <GoalsTable rows={juneGoals} />
+            </motion.section>
+          )}
+        </AnimatePresence>
       </div>
-
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="relative mt-20 rounded-2xl p-7"
-        style={{ background: NAVY_MID, border: "1px solid rgba(255,255,255,0.08)" }}
-      >
-        <SectionTitle kicker="Metas individuais">Distribuição de Meta por Consultor</SectionTitle>
-        <GoalsBars rows={juneGoals} />
-      </motion.section>
-
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="mt-12"
-      >
-        <SectionTitle kicker="Detalhamento">Tabela de Metas — Junho</SectionTitle>
-        <GoalsTable rows={juneGoals} />
-      </motion.section>
     </motion.div>
   );
 }
 
 function Index() {
   const [tab, setTab] = useState<"maio" | "junho">("maio");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   return (
-    <div className="ms-root ms-grain">
+    <div className="ms-root ms-grain" data-theme={theme}>
       <Particles />
       <div className="relative z-10">
-        <Header />
+        <Header theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} />
         <Tabs value={tab} onChange={setTab} />
         <AnimatePresence mode="wait">
           {tab === "maio" ? <MayTab key="maio" /> : <JuneTab key="junho" />}
