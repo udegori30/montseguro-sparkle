@@ -48,7 +48,7 @@ export function PhotoUpload({ name }: { name: string }) {
         className="absolute inset-x-0 bottom-0 h-1/2"
         style={{
           background:
-            "linear-gradient(to bottom, transparent 0%, rgba(13,27,42,0.85) 70%, #0D1B2A 100%)",
+            "linear-gradient(to bottom, transparent 0%, var(--ms-photo-fade) 70%, var(--ms-bg) 100%)",
         }}
       />
       <button
