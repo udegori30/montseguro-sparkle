@@ -5,6 +5,7 @@ import "./RankingRow.css";
 // Linha de ranking: posicao, badge de variacao vs. ontem, avatar, nome,
 // meta secundaria opcional e valor destacado a direita.
 export function RankingRow({
+  id,
   position,
   name,
   avatarUrl,
@@ -21,7 +22,7 @@ export function RankingRow({
       <span className={`ranking-row__trend ${trend.className}`} title="Variação vs. ontem">
         {trend.symbol}
       </span>
-      <Avatar name={name} src={avatarUrl} size="sm" />
+      <Avatar consultantId={id} name={name} src={avatarUrl} size="sm" />
       <div className="ranking-row__info">
         <span className="ranking-row__name">{name}</span>
         {secondaryMeta && <span className="ranking-row__meta">{secondaryMeta}</span>}

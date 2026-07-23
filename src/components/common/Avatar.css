@@ -1,3 +1,9 @@
+.avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -10,6 +16,29 @@
   font-weight: 600;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.avatar__edit-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1px solid var(--bg-elevated);
+  color: #0b0b12;
+  font-size: 0.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.avatar__file-input {
+  display: none;
 }
 
 .avatar--sm {

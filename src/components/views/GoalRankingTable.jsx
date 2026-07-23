@@ -1,3 +1,4 @@
+import { Avatar } from "../common/Avatar.jsx";
 import { formatCurrency, formatPercent } from "../../utils/format.js";
 import "./GoalRankingTable.css";
 
@@ -24,6 +25,7 @@ export function GoalRankingTable({ title, demandLabel, rows, onEditDemand }) {
               <tr key={row.id}>
                 <td className="goal-table__name">
                   <span className="goal-table__rank">{index + 1}</span>
+                  <Avatar consultantId={row.id} name={row.name} size="sm" />
                   {row.name}
                 </td>
                 <td>

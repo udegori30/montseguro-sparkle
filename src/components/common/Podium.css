@@ -52,6 +52,12 @@
   font-size: 1.3rem;
 }
 
+.podium__meta {
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
 .podium__stand {
   width: 100%;
   border-radius: 10px 10px 0 0;

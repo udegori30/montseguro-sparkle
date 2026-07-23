@@ -11,8 +11,9 @@ import {
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
+import { Podium } from "../common/Podium.jsx";
 import { GoalRankingTable } from "./GoalRankingTable.jsx";
-import { formatCurrency, formatNumber, formatPercent } from "../../utils/format.js";
+import { formatCurrency, formatNumber, formatPercent, getTrend } from "../../utils/format.js";
 import { getTabById } from "../../theme/tabThemes.js";
 import "./shared.css";
 import "./MetasView.css";
@@ -22,11 +23,18 @@ const { accent } = getTabById("metas");
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
+  const trend = point.dayOverDayPct == null ? null : getTrend(point.dayOverDayPct);
   return (
     <div className="metas-tooltip">
       <strong>{label}</strong>
-      <span>{formatPercent(point.goalPct)} da meta coletiva</span>
-      <span>{formatCurrency(point.revenue)} faturados no dia</span>
+      <span>{formatCurrency(point.revenue)} de resultado no dia</span>
+      <span>{formatNumber(point.contractsSigned)} contratos assinados</span>
+      <span>{formatNumber(point.contractsDeployed)} contratos implantados</span>
+      {trend && (
+        <span className={trend.className}>
+          {trend.symbol} {formatPercent(Math.abs(point.dayOverDayPct), 1)} vs. dia anterior
+        </span>
+      )}
     </div>
   );
 }
@@ -34,7 +42,7 @@ function ChartTooltip({ active, payload, label }) {
 // Monta as linhas de uma tabela de ranking por meta, ja ordenadas da maior
 // para a menor % de atingimento. `period` ("monthly"|"quarterly") define
 // qual override editavel (useEditableGoals) e aplicado sobre a demanda.
-function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, getGoal }) {
+function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, contractsKey, getGoal }) {
   return consultants
     .map((consultant) => {
       const demand = getGoal(consultant.id, period, consultant[defaultDemandKey]);
@@ -47,9 +55,21 @@ function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, get
         achieved,
         pct,
         remaining: Math.max(0, demand - achieved),
+        contracts: consultant[contractsKey],
       };
     })
     .sort((a, b) => b.pct - a.pct);
+}
+
+// Top 3 do ranking em formato de podio: mostra so o valor alcancado e a
+// quantidade de contratos (sem demanda/percentual, que ficam na tabela).
+function buildPodiumItems(rows) {
+  return rows.slice(0, 3).map((row) => ({
+    id: row.id,
+    name: row.name,
+    value: row.achieved,
+    meta: `${formatNumber(row.contracts)} contratos`,
+  }));
 }
 
 // Aba "Evolução de Metas": reaproveita os KPIs da visao mensal, adiciona um
@@ -65,6 +85,7 @@ export function MetasView() {
         period: "monthly",
         defaultDemandKey: "monthlyGoal",
         achievedKey: "monthRevenue",
+        contractsKey: "monthContracts",
         getGoal,
       }),
     [consultants, getGoal],
@@ -76,9 +97,26 @@ export function MetasView() {
         period: "quarterly",
         defaultDemandKey: "quarterlyGoal",
         achievedKey: "quarterRevenue",
+        contractsKey: "quarterContracts",
         getGoal,
       }),
     [consultants, getGoal],
+  );
+
+  const monthlyPodium = useMemo(() => buildPodiumItems(monthlyRows), [monthlyRows]);
+  const quarterlyPodium = useMemo(() => buildPodiumItems(quarterlyRows), [quarterlyRows]);
+
+  const chartData = useMemo(
+    () =>
+      goalsEvolution.map((point, index) => {
+        const previous = goalsEvolution[index - 1];
+        const dayOverDayPct =
+          previous && previous.revenue > 0
+            ? ((point.revenue - previous.revenue) / previous.revenue) * 100
+            : null;
+        return { ...point, dayOverDayPct };
+      }),
+    [goalsEvolution],
   );
 
   function handleEditDemand(period, periodLabel) {
@@ -101,14 +139,14 @@ export function MetasView() {
         />
         <KpiCard label="Análise · Mês" value={formatCurrency(summary.analysisMonth)} />
         <KpiCard label="Aguardando Pagamento · Mês" value={formatCurrency(summary.awaitingPayment)} />
-        <KpiCard label="Leads em Aberto" value={formatNumber(summary.openLeads)} />
+        <KpiCard label="Ticket Médio" value={formatCurrency(summary.ticketMedio)} />
       </div>
 
       <div className="section">
-        <h2 className="section-title">Evolução da Meta Coletiva (14 dias)</h2>
+        <h2 className="section-title">Evolução de Resultado (14 dias)</h2>
         <div className="metas-chart">
           <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={goalsEvolution} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="metaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={accent} stopOpacity={0.5} />
@@ -134,18 +172,24 @@ export function MetasView() {
       <div className="section">
         <h2 className="section-title">Ranking de Consultores por Meta</h2>
         <div className="metas-goal-tables">
-          <GoalRankingTable
-            title="Meta Mensal"
-            demandLabel="Demanda/Mês"
-            rows={monthlyRows}
-            onEditDemand={handleEditDemand("monthly", "mensal")}
-          />
-          <GoalRankingTable
-            title="Meta Trimestral"
-            demandLabel="Demanda/Trimestre"
-            rows={quarterlyRows}
-            onEditDemand={handleEditDemand("quarterly", "trimestral")}
-          />
+          <div className="metas-goal-block">
+            <Podium items={monthlyPodium} />
+            <GoalRankingTable
+              title="Meta Mensal"
+              demandLabel="Demanda/Mês"
+              rows={monthlyRows}
+              onEditDemand={handleEditDemand("monthly", "mensal")}
+            />
+          </div>
+          <div className="metas-goal-block">
+            <Podium items={quarterlyPodium} />
+            <GoalRankingTable
+              title="Meta Trimestral"
+              demandLabel="Demanda/Trimestre"
+              rows={quarterlyRows}
+              onEditDemand={handleEditDemand("quarterly", "trimestral")}
+            />
+          </div>
         </div>
       </div>
     </div>

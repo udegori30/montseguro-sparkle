@@ -23,9 +23,10 @@ export function Podium({ items, valueFormatter = formatCurrency }) {
             className={`podium__slot podium__slot--${position}${isLeader ? " podium__slot--leader" : ""}`}
           >
             {isLeader && <div className="podium__crown">👑 LÍDER</div>}
-            <Avatar name={item.name} src={item.avatarUrl} size={isLeader ? "xl" : "lg"} />
+            <Avatar consultantId={item.id} name={item.name} src={item.avatarUrl} size={isLeader ? "xl" : "lg"} />
             <div className="podium__name">{item.name}</div>
             <div className="podium__value">{valueFormatter(item.value)}</div>
+            {item.meta && <div className="podium__meta">{item.meta}</div>}
             <div className={`podium__stand podium__stand--${position}`}>{position}º</div>
           </div>
         );

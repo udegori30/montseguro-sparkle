@@ -3,7 +3,7 @@ import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { KpiCard } from "../common/KpiCard.jsx";
 import { Podium } from "../common/Podium.jsx";
 import { RankingList } from "../common/RankingList.jsx";
-import { formatCurrency, formatNumber, formatPercent } from "../../utils/format.js";
+import { formatCurrency, formatPercent } from "../../utils/format.js";
 import { getDominantTemperature } from "../../utils/consultants.js";
 import "../views/shared.css";
 
@@ -52,8 +52,8 @@ export function GeralView() {
         />
         <KpiCard label="Análise · Mês" value={formatCurrency(summary.analysisMonth)} />
         <KpiCard label="Aguardando Pagamento · Mês" value={formatCurrency(summary.awaitingPayment)} />
-        <KpiCard label="Leads em Aberto" value={formatNumber(summary.openLeads)} />
-        <KpiCard label="SQL" value={formatNumber(summary.sql)} />
+        <KpiCard label="Ticket Médio" value={formatCurrency(summary.ticketMedio)} />
+        <KpiCard label="Taxa de Conversão" value={formatPercent(summary.conversionPct, 1)} />
       </div>
 
       <div className="section">

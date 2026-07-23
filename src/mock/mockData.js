@@ -74,6 +74,7 @@ function buildConsultant(index) {
   const leadsWarm = randomInt(2, 18);
   const leadsCold = randomInt(1, 22);
   const activeLeads = leadsHot + leadsWarm + leadsCold;
+  const monthContracts = randomInt(2, 9);
 
   return {
     id: `consultant-${index + 1}`,
@@ -94,8 +95,10 @@ function buildConsultant(index) {
     awaitingPayment: randomInt(1000, 25000),
     // Metas/realizado usados no ranking por meta da aba Evolucao de Metas.
     monthlyGoal: randomInt(90000, 160000),
+    monthContracts,
     quarterRevenue: Math.max(0, monthRevenue * 3 + randomInt(-30000, 30000)),
     quarterlyGoal: randomInt(270000, 480000),
+    quarterContracts: Math.max(monthContracts, monthContracts * 3 + randomInt(-4, 6)),
   };
 }
 
@@ -124,14 +127,14 @@ function buildTeam(identity, consultants) {
 }
 
 // Sem uma aba de funil dedicada, so precisamos do total de leads em aberto
-// e do SQL para os KPIs de Geral/Metas e para o ticker.
+// e da taxa de conversao para os KPIs de Geral/Metas e para o ticker.
 function buildLeadMetrics() {
   const totalLeads = randomInt(1400, 2200);
-  const closedPct = 9;
-  const closedCount = Math.round((totalLeads * closedPct) / 100);
+  const conversionPct = randomFloat(8, 18, 1);
+  const closedCount = Math.round((totalLeads * conversionPct) / 100);
   return {
     openLeads: totalLeads - closedCount,
-    sql: randomInt(180, 420),
+    conversionPct,
   };
 }
 
@@ -148,6 +151,8 @@ function buildGoalsEvolution() {
       date: date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
       goalPct: Number(goalPct.toFixed(1)),
       revenue: randomInt(20000, 60000),
+      contractsSigned: randomInt(15, 45),
+      contractsDeployed: randomInt(10, 35),
     });
   }
   return points;
@@ -161,6 +166,7 @@ export function createMockDataset() {
 
   const revenueTeams = teams.reduce((sum, t) => sum + t.implantado, 0);
   const revenueGoalValue = 1600000;
+  const totalMonthContracts = consultants.reduce((sum, c) => sum + c.monthContracts, 0);
   const summary = {
     revenueTeams,
     revenueGoalValue,
@@ -168,7 +174,8 @@ export function createMockDataset() {
     analysisMonth: teams.reduce((sum, t) => sum + t.analise, 0),
     awaitingPayment: teams.reduce((sum, t) => sum + t.emPagamento, 0),
     openLeads: leadMetrics.openLeads,
-    sql: leadMetrics.sql,
+    ticketMedio: totalMonthContracts > 0 ? revenueTeams / totalMonthContracts : 0,
+    conversionPct: leadMetrics.conversionPct,
   };
 
   const kpis = {
