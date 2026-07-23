@@ -45,7 +45,14 @@ const LAST_NAMES = [
   "Souza",
 ];
 
-const TEAM_NAMES = ["Time Falcão", "Time Águia", "Time Fênix"];
+// Identidade visual fixa de cada time (nome, cor de marca e escudo padrao).
+// `color` tinge borda/valores do card em TimesView, independente da cor de
+// acento da aba ativa. `crestUrl` fica null ate o usuario anexar um escudo.
+const TEAM_IDENTITIES = [
+  { id: "team-1", name: "Leões", color: "#f59e0b", crestUrl: null },
+  { id: "team-2", name: "Tubarões", color: "#ef4444", crestUrl: null },
+  { id: "team-3", name: "Fanáticos", color: "#22d3ee", crestUrl: null },
+];
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -93,21 +100,27 @@ function buildConsultant(index) {
   };
 }
 
-function buildTeam(id, name, consultants) {
-  const teamConsultants = consultants.filter((c) => c.teamId === id);
+function buildTeam(identity, consultants) {
+  const teamConsultants = consultants.filter((c) => c.teamId === identity.id);
   const implantado = teamConsultants.reduce((sum, c) => sum + c.monthRevenue, 0);
   const analise = teamConsultants.reduce((sum, c) => sum + c.analysisMonth, 0);
   const emPagamento = teamConsultants.reduce((sum, c) => sum + c.awaitingPayment, 0);
   return {
-    id,
-    name,
-    // Usa as 2 primeiras letras do nome proprio (ignora o prefixo "Time")
-    // para evitar colisao de iniciais entre times (ex.: Falcão x Fênix).
-    logoInitials: name.split(" ").slice(1).join("").slice(0, 2).toUpperCase(),
+    id: identity.id,
+    name: identity.name,
+    color: identity.color,
+    crestUrl: identity.crestUrl,
+    logoInitials: identity.name.slice(0, 2).toUpperCase(),
+    // Metricas usadas no calculo geral de faturamento/meta (Geral, Metas, ticker).
     implantado,
     analise,
     emPagamento,
     previsaoTotalMes: implantado + analise + emPagamento,
+    // Metricas exibidas no card do Ranking de Times.
+    valorContratos: implantado,
+    qtdContratos: randomInt(1, 6),
+    volumeAtendimento: randomFloat(30, 220, 2),
+    conversaoPct: randomFloat(0, 12, 2),
   };
 }
 
@@ -155,11 +168,7 @@ function buildGoalsEvolution() {
 
 export function createMockDataset() {
   const consultants = FIRST_NAMES.map((_, index) => buildConsultant(index));
-  const teams = [
-    buildTeam("team-1", TEAM_NAMES[0], consultants),
-    buildTeam("team-2", TEAM_NAMES[1], consultants),
-    buildTeam("team-3", TEAM_NAMES[2], consultants),
-  ];
+  const teams = TEAM_IDENTITIES.map((identity) => buildTeam(identity, consultants));
   const funnel = buildFunnel();
   const goalsEvolution = buildGoalsEvolution();
 

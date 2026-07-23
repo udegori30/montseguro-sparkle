@@ -13,6 +13,11 @@ const currencyFormatterDecimals = new Intl.NumberFormat("pt-BR", {
 
 const numberFormatter = new Intl.NumberFormat("pt-BR");
 
+const decimalFormatter = new Intl.NumberFormat("pt-BR", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 const dateLongFormatter = new Intl.DateTimeFormat("pt-BR", {
   weekday: "long",
   day: "2-digit",
@@ -33,7 +38,19 @@ export function formatNumber(value) {
 
 export function formatPercent(value, digits = 0) {
   const safeValue = Number.isFinite(value) ? value : 0;
-  return `${safeValue.toFixed(digits)}%`;
+  const formatter =
+    digits === 0
+      ? numberFormatter
+      : new Intl.NumberFormat("pt-BR", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits,
+        });
+  return `${formatter.format(safeValue)}%`;
+}
+
+// Numero decimal simples (sem simbolo de moeda), ex.: "167,87".
+export function formatDecimal(value) {
+  return decimalFormatter.format(Number.isFinite(value) ? value : 0);
 }
 
 export function formatDateLong(date = new Date()) {
