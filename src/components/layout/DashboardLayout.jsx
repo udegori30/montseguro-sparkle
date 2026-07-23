@@ -1,0 +1,93 @@
+import { useCallback, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { TABS, TAB_IDS, DEFAULT_TAB_ID, getTabById } from "../../theme/tabThemes.js";
+import { useCarousel } from "../../hooks/useCarousel.js";
+import { useDashboardData } from "../../context/DashboardDataContext.jsx";
+import { Header } from "./Header.jsx";
+import { TabNav } from "./TabNav.jsx";
+import { CarouselProgressBar } from "./CarouselProgressBar.jsx";
+import { KpiTicker } from "./KpiTicker.jsx";
+import { PreviousSummariesModal } from "./PreviousSummariesModal.jsx";
+import { GeralView } from "../views/GeralView.jsx";
+import { AssinaturasView } from "../views/AssinaturasView.jsx";
+import { ImplantacoesView } from "../views/ImplantacoesView.jsx";
+import { TimesView } from "../views/TimesView.jsx";
+import { FunilView } from "../views/FunilView.jsx";
+import { ConsultoresView } from "../views/ConsultoresView.jsx";
+import { MetasView } from "../views/MetasView.jsx";
+import "./DashboardLayout.css";
+
+const CAROUSEL_INTERVAL_MS = Number(import.meta.env.VITE_CAROUSEL_INTERVAL_MS) || 20000;
+
+const VIEW_COMPONENTS = {
+  geral: GeralView,
+  assinaturas: AssinaturasView,
+  implantacoes: ImplantacoesView,
+  times: TimesView,
+  funil: FunilView,
+  consultores: ConsultoresView,
+  metas: MetasView,
+};
+
+// Compoe as 4 regioes fixas da tela e liga o carrossel de abas a rota atual
+// (`/:tabId`), para que navegar manualmente e o avanco automatico usem o
+// mesmo mecanismo de troca de aba.
+export function DashboardLayout() {
+  const { tabId } = useParams();
+  const navigate = useNavigate();
+  const activeTab = getTabById(tabId ?? DEFAULT_TAB_ID);
+  const data = useDashboardData();
+  const [isSummariesOpen, setSummariesOpen] = useState(false);
+
+  const handleAdvance = useCallback(
+    (nextId) => navigate(`/${nextId}`, { replace: true }),
+    [navigate],
+  );
+
+  const { progress, isPaused, togglePause } = useCarousel({
+    tabIds: TAB_IDS,
+    activeId: activeTab.id,
+    intervalMs: CAROUSEL_INTERVAL_MS,
+    onAdvance: handleAdvance,
+  });
+
+  const handleSelectTab = useCallback((id) => navigate(`/${id}`), [navigate]);
+
+  const ActiveView = VIEW_COMPONENTS[activeTab.id] ?? GeralView;
+  const style = useMemo(() => ({ "--accent": activeTab.accent }), [activeTab.accent]);
+
+  return (
+    <div className="dashboard" style={style}>
+      <Header
+        activeTab={activeTab}
+        isPaused={isPaused}
+        onTogglePause={togglePause}
+        onOpenSummaries={() => setSummariesOpen(true)}
+      />
+      <TabNav tabs={TABS} activeId={activeTab.id} onSelect={handleSelectTab} />
+      <CarouselProgressBar progress={progress} />
+      <KpiTicker kpis={data.kpis} />
+
+      <main className="dashboard__content">
+        {data.status === "error" && (
+          <div className="dashboard-status dashboard-status--error">
+            <p>Não foi possível carregar os dados ao vivo.</p>
+            <button type="button" onClick={data.reload}>
+              Tentar novamente
+            </button>
+          </div>
+        )}
+        {data.status === "loading" && (
+          <div className="dashboard-status">Carregando dados ao vivo…</div>
+        )}
+        {data.status === "ready" && (
+          <div className="dashboard-view-enter" key={activeTab.id}>
+            <ActiveView />
+          </div>
+        )}
+      </main>
+
+      {isSummariesOpen && <PreviousSummariesModal onClose={() => setSummariesOpen(false)} />}
+    </div>
+  );
+}

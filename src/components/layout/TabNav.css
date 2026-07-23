@@ -1,0 +1,38 @@
+.tab-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 0.25rem;
+  padding: 0 1.25rem;
+  background: var(--bg-elevated);
+  overflow-x: auto;
+}
+
+.tab-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-nav__item:hover {
+  color: var(--text-primary);
+}
+
+.tab-nav__item--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tab-nav__icon {
+  font-size: 0.95rem;
+}

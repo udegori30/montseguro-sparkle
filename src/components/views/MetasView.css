@@ -1,0 +1,24 @@
+.metas-chart {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem 1.2rem 0.5rem;
+}
+
+.metas-tooltip {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.metas-tooltip strong {
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--accent);
+}

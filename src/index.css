@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+/* Tema dark por padrao. `--accent` e sobrescrita por aba em DashboardLayout. */
+:root {
+  --bg-base: #0b0d12;
+  --bg-elevated: #14171f;
+  --bg-sunken: #0e1016;
+  --border-subtle: #262b36;
+  --text-primary: #f4f5f7;
+  --text-muted: #8b93a7;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --accent: #8b5cf6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-sunken);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 999px;
+}

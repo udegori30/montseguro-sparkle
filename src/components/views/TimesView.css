@@ -1,0 +1,84 @@
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.team-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.team-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.team-card__position {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.team-card__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--accent) 22%, var(--bg-elevated));
+  border: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.team-card__name {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.team-card__metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.team-card__metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.team-card__metric dt {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.team-card__metric dd {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.team-card__metric--total dd {
+  color: var(--accent);
+}
+
+@media (max-width: 1100px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+}

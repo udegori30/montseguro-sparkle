@@ -1,0 +1,85 @@
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.8rem 1rem 0.5rem;
+}
+
+.podium__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 170px;
+}
+
+.podium__slot--leader {
+  width: 200px;
+}
+
+.podium__slot--empty {
+  visibility: hidden;
+}
+
+.podium__crown {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+.podium__name {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podium__value {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.podium__slot--leader .podium__value {
+  font-size: 1.3rem;
+}
+
+.podium__stand {
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 32%, transparent),
+    color-mix(in srgb, var(--accent) 8%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-bottom: none;
+  text-align: center;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding-top: 0.4rem;
+}
+
+.podium__stand--1 {
+  height: 92px;
+  font-size: 1.5rem;
+}
+
+.podium__stand--2 {
+  height: 62px;
+  font-size: 1.15rem;
+}
+
+.podium__stand--3 {
+  height: 42px;
+  font-size: 1.15rem;
+}

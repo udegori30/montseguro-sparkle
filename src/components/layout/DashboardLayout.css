@@ -1,0 +1,49 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-base);
+}
+
+.dashboard__content {
+  flex: 1;
+  padding: 1.5rem 1.75rem 2.5rem;
+  overflow-y: auto;
+}
+
+.dashboard-view-enter {
+  animation: view-enter 0.35s ease;
+}
+
+@keyframes view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 50vh;
+  font-family: "Inter", sans-serif;
+  color: var(--text-muted);
+}
+
+.dashboard-status--error button {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}

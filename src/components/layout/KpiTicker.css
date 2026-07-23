@@ -1,0 +1,75 @@
+.kpi-ticker {
+  display: flex;
+  align-items: center;
+  background: var(--bg-sunken);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.kpi-ticker__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--bg-base);
+  background: var(--accent);
+  padding: 0.5rem 0.9rem;
+  z-index: 1;
+}
+
+.kpi-ticker__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bg-base);
+  animation: header-pulse 1.6s ease-in-out infinite;
+}
+
+.kpi-ticker__track {
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.kpi-ticker__content {
+  display: flex;
+  width: max-content;
+  animation: kpi-ticker-scroll 32s linear infinite;
+}
+
+@keyframes kpi-ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.kpi-ticker__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  white-space: nowrap;
+}
+
+.kpi-ticker__label {
+  font-family: "Inter", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.kpi-ticker__value {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
