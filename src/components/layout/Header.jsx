@@ -11,18 +11,14 @@ function handleExit() {
   window.close();
 }
 
-// Regiao 1 do layout: badge AO VIVO, titulo/subtitulo por aba, data/relogio
-// e as acoes de pausar, rever resumos e sair.
+// Regiao 1 do layout: titulo/subtitulo por aba, data/relogio e as acoes de
+// pausar, rever resumos e sair.
 export function Header({ activeTab, isPaused, onTogglePause, onOpenSummaries }) {
   const now = useClock();
 
   return (
     <header className="header">
       <div className="header__left">
-        <span className="header__live-badge">
-          <span className="header__live-dot" aria-hidden="true" />
-          AO VIVO
-        </span>
         <div className="header__titles">
           <h1 className="header__title">
             {APP_TITLE_PREFIX} <span className="header__title-accent">{APP_NAME}</span>

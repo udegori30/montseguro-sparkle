@@ -1,4 +1,4 @@
-// Configuracao central das 7 abas do wallboard.
+// Configuracao central das abas do wallboard.
 // Cada aba define o rotulo do nav, o subtitulo do header e a cor de acento
 // propagada via CSS custom property `--accent` (ver DashboardLayout).
 export const TABS = [
@@ -29,20 +29,6 @@ export const TABS = [
     subtitle: "Dashboard",
     accent: "#a855f7",
     icon: "👥",
-  },
-  {
-    id: "funil",
-    label: "Funil de Vendas",
-    subtitle: "Funil de Vendas Geral",
-    accent: "#f43f5e",
-    icon: "🧭",
-  },
-  {
-    id: "consultores",
-    label: "Consultores",
-    subtitle: "Análise de Consultores",
-    accent: "#3b82f6",
-    icon: "🌡️",
   },
   {
     id: "metas",

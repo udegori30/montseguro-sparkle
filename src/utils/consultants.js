@@ -7,7 +7,3 @@ export function getDominantTemperature(consultant) {
   ];
   return options.reduce((best, option) => (option.count > best.count ? option : best));
 }
-
-export function sortByValueDesc(list) {
-  return [...list].sort((a, b) => b.value - a.value);
-}

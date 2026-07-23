@@ -47,17 +47,12 @@ export const api = {
     if (USE_MOCK) return getMockDataset().teams;
     return request("/teams/");
   },
-  // Agregacao usada pela view Funil de Vendas
-  async getFunnel() {
-    if (USE_MOCK) return getMockDataset().funnel;
-    return request("/funnel/");
-  },
   // Serie historica usada pela view Evolucao de Metas
   async getGoalsEvolution() {
     if (USE_MOCK) return getMockDataset().goalsEvolution;
     return request("/goals/evolution/");
   },
-  // KPIs consolidados do ticker "LIVE"
+  // KPIs consolidados exibidos na faixa rolante do topo
   async getKpis() {
     if (USE_MOCK) return getMockDataset().kpis;
     return request("/kpis/");

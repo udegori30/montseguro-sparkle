@@ -74,7 +74,6 @@ function buildConsultant(index) {
   const leadsWarm = randomInt(2, 18);
   const leadsCold = randomInt(1, 22);
   const activeLeads = leadsHot + leadsWarm + leadsCold;
-  const pipelineValue = randomInt(15000, 90000);
 
   return {
     id: `consultant-${index + 1}`,
@@ -91,12 +90,12 @@ function buildConsultant(index) {
     leadsHot,
     leadsWarm,
     leadsCold,
-    pipelineValue,
-    closingValue: randomInt(4000, 30000),
-    closedValue: randomInt(2000, 20000),
-    stalledValue: randomInt(0, 12000),
     analysisMonth: randomInt(2000, 40000),
     awaitingPayment: randomInt(1000, 25000),
+    // Metas/realizado usados no ranking por meta da aba Evolucao de Metas.
+    monthlyGoal: randomInt(90000, 160000),
+    quarterRevenue: Math.max(0, monthRevenue * 3 + randomInt(-30000, 30000)),
+    quarterlyGoal: randomInt(270000, 480000),
   };
 }
 
@@ -124,27 +123,15 @@ function buildTeam(identity, consultants) {
   };
 }
 
-function buildFunnel() {
-  const stageDefs = [
-    { name: "Tentativas", pctOfFunnel: 100 },
-    { name: "Sondagem", pctOfFunnel: 62 },
-    { name: "Proposta", pctOfFunnel: 38 },
-    { name: "Negociação", pctOfFunnel: 21 },
-    { name: "Fechamento", pctOfFunnel: 9 },
-  ];
+// Sem uma aba de funil dedicada, so precisamos do total de leads em aberto
+// e do SQL para os KPIs de Geral/Metas e para o ticker.
+function buildLeadMetrics() {
   const totalLeads = randomInt(1400, 2200);
-  const stages = stageDefs.map((stage) => ({
-    ...stage,
-    count: Math.round((totalLeads * stage.pctOfFunnel) / 100),
-    value: randomInt(60000, 480000),
-    daysInStage: randomInt(1, 9),
-  }));
+  const closedPct = 9;
+  const closedCount = Math.round((totalLeads * closedPct) / 100);
   return {
-    totalLeads,
-    pipelineValue: stages.reduce((sum, s) => sum + s.value, 0),
+    openLeads: totalLeads - closedCount,
     sql: randomInt(180, 420),
-    coldLeads: randomInt(300, 700),
-    stages,
   };
 }
 
@@ -169,7 +156,7 @@ function buildGoalsEvolution() {
 export function createMockDataset() {
   const consultants = FIRST_NAMES.map((_, index) => buildConsultant(index));
   const teams = TEAM_IDENTITIES.map((identity) => buildTeam(identity, consultants));
-  const funnel = buildFunnel();
+  const leadMetrics = buildLeadMetrics();
   const goalsEvolution = buildGoalsEvolution();
 
   const revenueTeams = teams.reduce((sum, t) => sum + t.implantado, 0);
@@ -180,8 +167,8 @@ export function createMockDataset() {
     revenueGoalPct: Number(((revenueTeams / revenueGoalValue) * 100).toFixed(1)),
     analysisMonth: teams.reduce((sum, t) => sum + t.analise, 0),
     awaitingPayment: teams.reduce((sum, t) => sum + t.emPagamento, 0),
-    openLeads: funnel.totalLeads - funnel.stages[funnel.stages.length - 1].count,
-    sql: funnel.sql,
+    openLeads: leadMetrics.openLeads,
+    sql: leadMetrics.sql,
   };
 
   const kpis = {
@@ -206,7 +193,7 @@ export function createMockDataset() {
     currentLeader: [...consultants].sort((a, b) => b.monthRevenue - a.monthRevenue)[0]?.name ?? "—",
   };
 
-  return { consultants, teams, funnel, goalsEvolution, summary, kpis };
+  return { consultants, teams, goalsEvolution, summary, kpis };
 }
 
 // --- Emissor de eventos simulados (substitui o EventSource real em modo mock) ---

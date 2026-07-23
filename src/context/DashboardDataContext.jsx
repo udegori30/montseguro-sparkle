@@ -9,7 +9,6 @@ const initialState = {
   error: null,
   consultants: [],
   teams: [],
-  funnel: null,
   goalsEvolution: [],
   summary: null,
   kpis: null,
@@ -114,17 +113,16 @@ export function DashboardDataProvider({ children }) {
 
   const loadInitialData = useCallback(async () => {
     try {
-      const [consultants, teams, funnel, goalsEvolution, summary, kpis] = await Promise.all([
+      const [consultants, teams, goalsEvolution, summary, kpis] = await Promise.all([
         api.getConsultants(),
         api.getTeams(),
-        api.getFunnel(),
         api.getGoalsEvolution(),
         api.getSummary(),
         api.getKpis(),
       ]);
       dispatch({
         type: "INIT_SUCCESS",
-        payload: { consultants, teams, funnel, goalsEvolution, summary, kpis },
+        payload: { consultants, teams, goalsEvolution, summary, kpis },
       });
     } catch (error) {
       dispatch({ type: "INIT_ERROR", error: error.message ?? "Erro ao carregar dados" });

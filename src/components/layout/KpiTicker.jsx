@@ -19,7 +19,7 @@ function buildItems(kpis) {
   ];
 }
 
-// Regiao 3 do layout: faixa horizontal rolante de KPIs, com badge LIVE fixo.
+// Regiao 3 do layout: faixa horizontal rolante de KPIs.
 // O conteudo e duplicado para permitir um loop de rolagem continuo via CSS.
 export function KpiTicker({ kpis }) {
   if (!kpis) return null;
@@ -27,10 +27,6 @@ export function KpiTicker({ kpis }) {
 
   return (
     <div className="kpi-ticker">
-      <span className="kpi-ticker__badge">
-        <span className="kpi-ticker__dot" aria-hidden="true" />
-        LIVE
-      </span>
       <div className="kpi-ticker__track">
         <div className="kpi-ticker__content">
           {items.concat(items).map((item, index) => (

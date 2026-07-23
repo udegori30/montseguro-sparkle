@@ -12,8 +12,6 @@ import { GeralView } from "../views/GeralView.jsx";
 import { AssinaturasView } from "../views/AssinaturasView.jsx";
 import { ImplantacoesView } from "../views/ImplantacoesView.jsx";
 import { TimesView } from "../views/TimesView.jsx";
-import { FunilView } from "../views/FunilView.jsx";
-import { ConsultoresView } from "../views/ConsultoresView.jsx";
 import { MetasView } from "../views/MetasView.jsx";
 import "./DashboardLayout.css";
 
@@ -24,8 +22,6 @@ const VIEW_COMPONENTS = {
   assinaturas: AssinaturasView,
   implantacoes: ImplantacoesView,
   times: TimesView,
-  funil: FunilView,
-  consultores: ConsultoresView,
   metas: MetasView,
 };
 
@@ -71,14 +67,14 @@ export function DashboardLayout() {
       <main className="dashboard__content">
         {data.status === "error" && (
           <div className="dashboard-status dashboard-status--error">
-            <p>Não foi possível carregar os dados ao vivo.</p>
+            <p>Não foi possível carregar os dados.</p>
             <button type="button" onClick={data.reload}>
               Tentar novamente
             </button>
           </div>
         )}
         {data.status === "loading" && (
-          <div className="dashboard-status">Carregando dados ao vivo…</div>
+          <div className="dashboard-status">Carregando dados…</div>
         )}
         {data.status === "ready" && (
           <div className="dashboard-view-enter" key={activeTab.id}>

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -8,7 +9,9 @@ import {
   Tooltip,
 } from "recharts";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
+import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
+import { GoalRankingTable } from "./GoalRankingTable.jsx";
 import { formatCurrency, formatNumber, formatPercent } from "../../utils/format.js";
 import { getTabById } from "../../theme/tabThemes.js";
 import "./shared.css";
@@ -28,10 +31,64 @@ function ChartTooltip({ active, payload, label }) {
   );
 }
 
-// Aba "Evolução de Metas": reaproveita os KPIs da visao mensal e adiciona
-// um grafico de area com o progresso da meta coletiva ao longo do tempo.
+// Monta as linhas de uma tabela de ranking por meta, ja ordenadas da maior
+// para a menor % de atingimento. `period` ("monthly"|"quarterly") define
+// qual override editavel (useEditableGoals) e aplicado sobre a demanda.
+function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, getGoal }) {
+  return consultants
+    .map((consultant) => {
+      const demand = getGoal(consultant.id, period, consultant[defaultDemandKey]);
+      const achieved = consultant[achievedKey];
+      const pct = demand > 0 ? (achieved / demand) * 100 : 0;
+      return {
+        id: consultant.id,
+        name: consultant.name,
+        demand,
+        achieved,
+        pct,
+        remaining: Math.max(0, demand - achieved),
+      };
+    })
+    .sort((a, b) => b.pct - a.pct);
+}
+
+// Aba "Evolução de Metas": reaproveita os KPIs da visao mensal, adiciona um
+// grafico de area com o progresso da meta coletiva e o ranking de
+// consultores por meta mensal/trimestral (com metas editaveis).
 export function MetasView() {
-  const { summary, goalsEvolution } = useDashboardData();
+  const { consultants, summary, goalsEvolution } = useDashboardData();
+  const { getGoal, setGoal } = useEditableGoals();
+
+  const monthlyRows = useMemo(
+    () =>
+      buildGoalRows(consultants, {
+        period: "monthly",
+        defaultDemandKey: "monthlyGoal",
+        achievedKey: "monthRevenue",
+        getGoal,
+      }),
+    [consultants, getGoal],
+  );
+
+  const quarterlyRows = useMemo(
+    () =>
+      buildGoalRows(consultants, {
+        period: "quarterly",
+        defaultDemandKey: "quarterlyGoal",
+        achievedKey: "quarterRevenue",
+        getGoal,
+      }),
+    [consultants, getGoal],
+  );
+
+  function handleEditDemand(period, periodLabel) {
+    return (consultantId, currentValue) => {
+      const input = window.prompt(`Nova meta ${periodLabel} (R$):`, String(currentValue));
+      if (input === null) return;
+      const parsed = Number(input.replace(/[^\d]/g, ""));
+      if (Number.isFinite(parsed) && parsed > 0) setGoal(consultantId, period, parsed);
+    };
+  }
 
   return (
     <div className="view">
@@ -71,6 +128,24 @@ export function MetasView() {
               />
             </AreaChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="section">
+        <h2 className="section-title">Ranking de Consultores por Meta</h2>
+        <div className="metas-goal-tables">
+          <GoalRankingTable
+            title="Meta Mensal"
+            demandLabel="Demanda/Mês"
+            rows={monthlyRows}
+            onEditDemand={handleEditDemand("monthly", "mensal")}
+          />
+          <GoalRankingTable
+            title="Meta Trimestral"
+            demandLabel="Demanda/Trimestre"
+            rows={quarterlyRows}
+            onEditDemand={handleEditDemand("quarterly", "trimestral")}
+          />
         </div>
       </div>
     </div>

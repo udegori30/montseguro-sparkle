@@ -8,6 +8,12 @@ export default [
   { ignores: ["dist", "node_modules"] },
   js.configs.recommended,
   {
+    files: ["vite.config.js"],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2020,
