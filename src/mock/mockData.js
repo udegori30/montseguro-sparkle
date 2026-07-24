@@ -220,7 +220,8 @@ export function createMockDataset() {
 
 // --- Emissor de eventos simulados (substitui o EventSource real em modo mock) ---
 // Mantem o mesmo formato de mensagem que o canal SSE real deve enviar:
-// { type: 'sale' | 'lead_temperature_change' | 'ranking_update', payload, timestamp }
+// { type: 'contract_signed' | 'contract_deployed' | 'lead_temperature_change'
+//   | 'ranking_update', payload, timestamp }
 export function createMockEventSource() {
   let closed = false;
   const listeners = new Set();
@@ -248,9 +249,15 @@ export function createMockEventSource() {
     const roll = Math.random();
     const consultantId = `consultant-${randomInt(1, FIRST_NAMES.length)}`;
 
-    if (roll < 0.55) {
+    if (roll < 0.3) {
       emit({
-        type: "sale",
+        type: "contract_signed",
+        payload: { consultantId, amount: randomInt(800, 12000) },
+        timestamp: new Date().toISOString(),
+      });
+    } else if (roll < 0.55) {
+      emit({
+        type: "contract_deployed",
         payload: { consultantId, amount: randomInt(800, 12000) },
         timestamp: new Date().toISOString(),
       });

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DashboardDataProvider } from "./context/DashboardDataContext.jsx";
 import { ConsultantPhotosProvider } from "./context/ConsultantPhotosContext.jsx";
+import { TeamCrestsProvider } from "./context/TeamCrestsContext.jsx";
 import { DashboardLayout } from "./components/layout/DashboardLayout.jsx";
 import { DEFAULT_TAB_ID } from "./theme/tabThemes.js";
 
@@ -15,15 +16,17 @@ const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 export default function App() {
   return (
     <ConsultantPhotosProvider>
-      <DashboardDataProvider>
-        <BrowserRouter basename={basename}>
-          <Routes>
-            <Route path="/" element={<Navigate to={`/${DEFAULT_TAB_ID}`} replace />} />
-            <Route path="/:tabId" element={<DashboardLayout />} />
-            <Route path="*" element={<Navigate to={`/${DEFAULT_TAB_ID}`} replace />} />
-          </Routes>
-        </BrowserRouter>
-      </DashboardDataProvider>
+      <TeamCrestsProvider>
+        <DashboardDataProvider>
+          <BrowserRouter basename={basename}>
+            <Routes>
+              <Route path="/" element={<Navigate to={`/${DEFAULT_TAB_ID}`} replace />} />
+              <Route path="/:tabId" element={<DashboardLayout />} />
+              <Route path="*" element={<Navigate to={`/${DEFAULT_TAB_ID}`} replace />} />
+            </Routes>
+          </BrowserRouter>
+        </DashboardDataProvider>
+      </TeamCrestsProvider>
     </ConsultantPhotosProvider>
   );
 }

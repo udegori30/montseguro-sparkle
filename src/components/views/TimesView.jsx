@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
+import { useTeamCrests } from "../../context/TeamCrestsContext.jsx";
 import { formatCurrency, formatNumber } from "../../utils/format.js";
 import "./shared.css";
 import "./TimesView.css";
@@ -13,8 +14,6 @@ const QUADRANTS = [
   { key: "implantado", contractsKey: "implantadoContratos", label: "Implantado" },
 ];
 
-const CREST_STORAGE_KEY = "montseguro:team-crests";
-
 // Metadados de posicao no podio: cor do badge numerico e o selo de
 // lider/vice-lider (o 3o colocado nao recebe selo, so o numero).
 const RANK_META = {
@@ -26,28 +25,11 @@ const RANK_META = {
 // Ordem visual de podio: 2o a esquerda, 1o ao centro (maior), 3o a direita.
 const VISUAL_ORDER = [2, 1, 3];
 
-function loadStoredCrests() {
-  try {
-    const raw = window.localStorage.getItem(CREST_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function persistCrests(crests) {
-  try {
-    window.localStorage.setItem(CREST_STORAGE_KEY, JSON.stringify(crests));
-  } catch {
-    // localStorage indisponivel (modo privado/quota) - segue sem persistir
-  }
-}
-
 // Aba "Ranking de Times": podio dos 3 times com escudo anexavel, badge de
 // posicao/lider e as metricas de contratos/atendimento de cada time.
 export function TimesView() {
   const { teams } = useDashboardData();
-  const [crests, setCrests] = useState(() => loadStoredCrests());
+  const { crests, setCrest, removeCrest } = useTeamCrests();
   const uploadTargetId = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -66,24 +48,13 @@ export function TimesView() {
     if (!file || !teamId) return;
 
     const reader = new FileReader();
-    reader.onload = () => {
-      setCrests((prev) => {
-        const next = { ...prev, [teamId]: reader.result };
-        persistCrests(next);
-        return next;
-      });
-    };
+    reader.onload = () => setCrest(teamId, reader.result);
     reader.readAsDataURL(file);
   }
 
   function handleRemoveCrest(teamId, event) {
     event.stopPropagation();
-    setCrests((prev) => {
-      const next = { ...prev };
-      delete next[teamId];
-      persistCrests(next);
-      return next;
-    });
+    removeCrest(teamId);
   }
 
   return (

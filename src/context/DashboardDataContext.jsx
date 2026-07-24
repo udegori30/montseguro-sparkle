@@ -13,6 +13,9 @@ const initialState = {
   summary: null,
   kpis: null,
   lastEventAt: null,
+  // Ultimo contrato assinado/implantado, consumido pelo CelebrationOverlay
+  // para disparar o take-over em tela cheia.
+  celebration: null,
 };
 
 function capitalize(word) {
@@ -34,47 +37,85 @@ function reducer(state, action) {
     case "INIT_ERROR":
       return { ...state, status: "error", error: action.error };
 
-    case "EVENT_SALE": {
+    case "EVENT_CONTRACT": {
       const { consultantId, amount } = action.payload;
-      const consultants = state.consultants.map((c) =>
-        c.id === consultantId
+      const isDeployed = action.stage === "deployed";
+      const consultants = state.consultants.map((c) => {
+        if (c.id !== consultantId) return c;
+        return isDeployed
           ? {
               ...c,
               monthRevenue: c.monthRevenue + amount,
+              todayDeployments: {
+                qty: c.todayDeployments.qty + 1,
+                value: c.todayDeployments.value + amount,
+              },
+            }
+          : {
+              ...c,
+              monthSigned: c.monthSigned + amount,
               todaySubscriptions: {
                 qty: c.todaySubscriptions.qty + 1,
                 value: c.todaySubscriptions.value + amount,
               },
-            }
-          : c,
-      );
+            };
+      });
       const consultant = consultants.find((c) => c.id === consultantId);
-      const teams = state.teams.map((team) =>
-        consultant && team.id === consultant.teamId
+
+      let { teams, summary, kpis } = state;
+      if (isDeployed) {
+        teams = state.teams.map((team) =>
+          consultant && team.id === consultant.teamId
+            ? {
+                ...team,
+                implantado: team.implantado + amount,
+                previsaoTotalMes: team.previsaoTotalMes + amount,
+              }
+            : team,
+        );
+        const revenueTeams = state.summary.revenueTeams + amount;
+        summary = {
+          ...state.summary,
+          revenueTeams,
+          revenueGoalPct: Number(((revenueTeams / state.summary.revenueGoalValue) * 100).toFixed(1)),
+        };
+        kpis = {
+          ...state.kpis,
+          teamRevenue: revenueTeams,
+          collectiveGoalPct: summary.revenueGoalPct,
+          deploymentsToday: {
+            qty: state.kpis.deploymentsToday.qty + 1,
+            value: state.kpis.deploymentsToday.value + amount,
+          },
+          currentLeader: recomputeLeader(consultants),
+        };
+      } else {
+        kpis = {
+          ...state.kpis,
+          subscriptionsToday: {
+            qty: state.kpis.subscriptionsToday.qty + 1,
+            value: state.kpis.subscriptionsToday.value + amount,
+          },
+        };
+      }
+
+      return {
+        ...state,
+        consultants,
+        teams,
+        summary,
+        kpis,
+        lastEventAt: action.timestamp,
+        celebration: consultant
           ? {
-              ...team,
-              implantado: team.implantado + amount,
-              previsaoTotalMes: team.previsaoTotalMes + amount,
+              consultantId,
+              teamId: consultant.teamId,
+              amount,
+              stage: action.stage,
+              timestamp: action.timestamp,
             }
-          : team,
-      );
-      const revenueTeams = state.summary.revenueTeams + amount;
-      const summary = {
-        ...state.summary,
-        revenueTeams,
-        revenueGoalPct: Number(((revenueTeams / state.summary.revenueGoalValue) * 100).toFixed(1)),
+          : state.celebration,
       };
-      const kpis = {
-        ...state.kpis,
-        teamRevenue: revenueTeams,
-        collectiveGoalPct: summary.revenueGoalPct,
-        subscriptionsToday: {
-          qty: state.kpis.subscriptionsToday.qty + 1,
-          value: state.kpis.subscriptionsToday.value + amount,
-        },
-        currentLeader: recomputeLeader(consultants),
-      };
-      return { ...state, consultants, teams, summary, kpis, lastEventAt: action.timestamp };
     }
 
     case "EVENT_LEAD_TEMPERATURE_CHANGE": {
@@ -136,8 +177,21 @@ export function DashboardDataProvider({ children }) {
   const handleEvent = useCallback((event) => {
     if (!event || !event.type) return;
     switch (event.type) {
-      case "sale":
-        dispatch({ type: "EVENT_SALE", payload: event.payload, timestamp: event.timestamp });
+      case "contract_signed":
+        dispatch({
+          type: "EVENT_CONTRACT",
+          payload: event.payload,
+          stage: "signed",
+          timestamp: event.timestamp,
+        });
+        break;
+      case "contract_deployed":
+        dispatch({
+          type: "EVENT_CONTRACT",
+          payload: event.payload,
+          stage: "deployed",
+          timestamp: event.timestamp,
+        });
         break;
       case "lead_temperature_change":
         dispatch({

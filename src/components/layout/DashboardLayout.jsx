@@ -5,6 +5,7 @@ import { useCarousel } from "../../hooks/useCarousel.js";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { Header } from "./Header.jsx";
 import { CarouselProgressBar } from "./CarouselProgressBar.jsx";
+import { CelebrationOverlay } from "./CelebrationOverlay.jsx";
 import { GeralView } from "../views/GeralView.jsx";
 import { AssinaturasView } from "../views/AssinaturasView.jsx";
 import { ImplantacoesView } from "../views/ImplantacoesView.jsx";
@@ -108,6 +109,8 @@ export function DashboardLayout() {
           </div>
         )}
       </main>
+
+      <CelebrationOverlay />
     </div>
   );
 }
