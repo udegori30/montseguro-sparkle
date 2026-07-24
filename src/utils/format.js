@@ -18,10 +18,9 @@ const decimalFormatter = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 2,
 });
 
-const dateLongFormatter = new Intl.DateTimeFormat("pt-BR", {
-  weekday: "long",
+const dateShortFormatter = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
-  month: "long",
+  month: "2-digit",
   year: "numeric",
 });
 
@@ -53,10 +52,8 @@ export function formatDecimal(value) {
   return decimalFormatter.format(Number.isFinite(value) ? value : 0);
 }
 
-export function formatDateLong(date = new Date()) {
-  const text = dateLongFormatter.format(date);
-  // Intl gera "quinta-feira, 23 de julho de 2026"; deixamos a primeira letra maiuscula.
-  return text.charAt(0).toUpperCase() + text.slice(1);
+export function formatDateShort(date = new Date()) {
+  return dateShortFormatter.format(date);
 }
 
 export function formatClock(date = new Date()) {

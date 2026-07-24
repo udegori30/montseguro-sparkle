@@ -1,5 +1,5 @@
 import { useClock } from "../../hooks/useClock.js";
-import { formatClock, formatDateLong } from "../../utils/format.js";
+import { formatClock, formatDateShort } from "../../utils/format.js";
 import { APP_NAME, APP_TITLE_PREFIX } from "../../config/appConfig.js";
 import { TabNav } from "./TabNav.jsx";
 import "./Header.css";
@@ -28,7 +28,7 @@ export function Header({ isPaused, onTogglePause, tabs, activeTabId, onSelectTab
       <TabNav tabs={tabs} activeId={activeTabId} onSelect={onSelectTab} />
 
       <div className="header__right">
-        <span className="header__date-chip">{formatDateLong(now)}</span>
+        <span className="header__date-chip">{formatDateShort(now)}</span>
         <span className="header__clock num">{formatClock(now)}</span>
         <button type="button" className="ctrl-btn" onClick={onTogglePause}>
           {isPaused ? "▶ Retomar" : "⏸ Pausar"}
