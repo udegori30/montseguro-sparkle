@@ -11,17 +11,8 @@ import {
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
-import { Podium } from "../common/Podium.jsx";
 import { GoalRankingTable } from "./GoalRankingTable.jsx";
-import {
-  daysUntilEndOfMonth,
-  daysUntilEndOfQuarter,
-  formatCurrency,
-  formatNumber,
-  formatPercent,
-  formatResetLabel,
-  getTrend,
-} from "../../utils/format.js";
+import { formatCurrency, formatNumber, formatPercent, getTrend } from "../../utils/format.js";
 import { getTabById } from "../../theme/tabThemes.js";
 import "./shared.css";
 import "./MetasView.css";
@@ -75,17 +66,6 @@ function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, con
     .sort((a, b) => b.pct - a.pct);
 }
 
-// Top 3 do ranking em formato de podio: mostra so o valor alcancado e a
-// quantidade de contratos (sem demanda/percentual, que ficam na tabela).
-function buildPodiumItems(rows) {
-  return rows.slice(0, 3).map((row) => ({
-    id: row.id,
-    name: row.name,
-    value: row.achieved,
-    contracts: row.contracts,
-  }));
-}
-
 // Aba "Evolução de Metas": reaproveita os KPIs da visao mensal, adiciona um
 // grafico de area com o progresso da meta coletiva e o ranking de
 // consultores por meta mensal/trimestral (com metas editaveis).
@@ -116,9 +96,6 @@ export function MetasView() {
       }),
     [consultants, getGoal],
   );
-
-  const monthlyPodium = useMemo(() => buildPodiumItems(monthlyRows), [monthlyRows]);
-  const quarterlyPodium = useMemo(() => buildPodiumItems(quarterlyRows), [quarterlyRows]);
 
   const chartData = useMemo(
     () =>
@@ -187,34 +164,18 @@ export function MetasView() {
       <div className="section">
         <h2 className="section-title">Ranking de Consultores por Meta</h2>
         <div className="metas-goal-tables">
-          <div className="metas-goal-block">
-            <Podium
-              items={monthlyPodium}
-              metricLabel="Resultado"
-              secondaryLabel="Contratos Fechados"
-              resetLabel={formatResetLabel(daysUntilEndOfMonth())}
-            />
-            <GoalRankingTable
-              title="Meta Mensal"
-              demandLabel="Demanda/Mês"
-              rows={monthlyRows}
-              onEditDemand={handleEditDemand("monthly", "mensal")}
-            />
-          </div>
-          <div className="metas-goal-block">
-            <Podium
-              items={quarterlyPodium}
-              metricLabel="Resultado"
-              secondaryLabel="Contratos Fechados"
-              resetLabel={formatResetLabel(daysUntilEndOfQuarter())}
-            />
-            <GoalRankingTable
-              title="Meta Trimestral"
-              demandLabel="Demanda/Trimestre"
-              rows={quarterlyRows}
-              onEditDemand={handleEditDemand("quarterly", "trimestral")}
-            />
-          </div>
+          <GoalRankingTable
+            title="Meta Mensal"
+            demandLabel="Demanda/Mês"
+            rows={monthlyRows}
+            onEditDemand={handleEditDemand("monthly", "mensal")}
+          />
+          <GoalRankingTable
+            title="Meta Trimestral"
+            demandLabel="Demanda/Trimestre"
+            rows={quarterlyRows}
+            onEditDemand={handleEditDemand("quarterly", "trimestral")}
+          />
         </div>
       </div>
     </div>

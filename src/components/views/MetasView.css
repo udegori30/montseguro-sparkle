@@ -29,9 +29,3 @@
   gap: 1rem;
   align-items: start;
 }
-
-.metas-goal-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
