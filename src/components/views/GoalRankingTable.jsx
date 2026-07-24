@@ -16,7 +16,7 @@ export function GoalRankingTable({ title, demandLabel, rows, onEditDemand }) {
               <th>Prestador</th>
               <th>{demandLabel}</th>
               <th>Alcançado</th>
-              <th>Percentual de Atingimento</th>
+              <th>%</th>
               <th>Restante</th>
             </tr>
           </thead>
