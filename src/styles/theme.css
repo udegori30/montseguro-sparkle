@@ -89,35 +89,7 @@ body {
   color: var(--fg-dim);
 }
 
-/* Bolinha "ao vivo" pulsante, reaproveitada pelo Header e pelo Ticker. */
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--theme-color);
-  animation: livePulse 1.8s infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .live-dot {
-    animation: none;
-    box-shadow: 0 0 0 4px rgba(var(--theme-color-rgb), 0.25);
-  }
-}
-
 /* --- Keyframes --- */
-@keyframes livePulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(var(--theme-color-rgb), 0.55);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(var(--theme-color-rgb), 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--theme-color-rgb), 0);
-  }
-}
-
 @keyframes tickerScroll {
   0% {
     transform: translateX(0);
@@ -317,7 +289,6 @@ body {
    ficam junto de cada componente (Header.css, KpiCard.css, Podium.css,
    RankingRow.css), sob o mesmo seletor `@media (prefers-reduced-motion: reduce)`. */
 @media (prefers-reduced-motion: reduce) {
-  .live-dot,
   .tab-btn,
   .kpi-card.featured,
   .kpi-value.shimmer-text,

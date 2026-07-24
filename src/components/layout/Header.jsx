@@ -12,18 +12,14 @@ function handleExit() {
   window.close();
 }
 
-// Regiao 1 do layout: selo "AO VIVO", titulo do app, as abas de navegacao
-// (na mesma linha, para economizar altura) e as acoes de pausar e sair.
+// Regiao 1 do layout: titulo do app, as abas de navegacao (na mesma linha,
+// para economizar altura) e as acoes de pausar e sair.
 export function Header({ isPaused, onTogglePause, tabs, activeTabId, onSelectTab }) {
   const now = useClock();
 
   return (
     <header className="header glass-panel">
       <div className="header__left">
-        <span className="live-badge">
-          <span className="live-dot" aria-hidden="true" />
-          AO VIVO
-        </span>
         <h1 className="header__title">
           {APP_TITLE_PREFIX} <span className="header__title-accent">{APP_NAME}</span>
         </h1>
