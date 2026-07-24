@@ -1,5 +1,8 @@
-.previsao-table-wrap {
-  max-width: 640px;
+.previsao-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1rem;
+  align-items: start;
 }
 
 .previsao-table__cell {
