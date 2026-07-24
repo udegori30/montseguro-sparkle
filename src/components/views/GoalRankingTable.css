@@ -73,6 +73,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  color: var(--positive);
+  font-weight: 700;
 }
 
 .goal-table__edit-btn {
@@ -91,7 +93,22 @@
   background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
-.goal-table__pct--done {
+.goal-table td.goal-table__tier--low {
+  color: var(--negative);
+  font-weight: 700;
+}
+
+.goal-table td.goal-table__tier--mid {
+  color: #eab308;
+  font-weight: 700;
+}
+
+.goal-table td.goal-table__tier--high {
+  color: #a855f7;
+  font-weight: 700;
+}
+
+.goal-table td.goal-table__tier--done {
   color: var(--positive);
   font-weight: 700;
 }
