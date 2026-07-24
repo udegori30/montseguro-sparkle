@@ -1,63 +1,185 @@
-.ranking-row {
+.rank-row {
   display: grid;
-  grid-template-columns: 1.6rem 1.2rem auto 1fr auto;
+  grid-template-columns: 26px 30px 44px minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.55rem 0.8rem;
-  border-radius: 8px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  min-height: 64px;
+  box-sizing: border-box;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--r-sm);
+  background: var(--ink-800);
+  border: 1px solid var(--line);
 }
 
-.ranking-row__position {
-  font-family: "JetBrains Mono", monospace;
-  color: var(--text-muted);
+/* Realce permanente do top 3 via outline (nao box-shadow), para nao ser
+   substituido pelos flashes de reacao ao vivo que animam box-shadow. */
+.rank-row.top1 {
+  outline: 1px solid rgba(var(--gold-rgb), 0.45);
+  outline-offset: -1px;
+  background: linear-gradient(90deg, rgba(var(--gold-rgb), 0.1), transparent 70%), var(--ink-800);
+}
+
+.rank-row.top2 {
+  outline: 1px solid rgba(var(--silver-rgb), 0.4);
+  outline-offset: -1px;
+}
+
+.rank-row.top3 {
+  outline: 1px solid rgba(var(--bronze-rgb), 0.35);
+  outline-offset: -1px;
+}
+
+.rank-row.rank-up {
+  animation: rankUpGlow 1s ease-out;
+}
+
+.rank-row.rank-down {
+  animation: rankDownGlow 1s ease-out;
+}
+
+.rank-row.celebrating {
+  animation: celebrateRow 1s ease-out;
+}
+
+.rank-num {
+  text-align: center;
+  color: var(--fg-dim);
   font-weight: 700;
-  text-align: center;
 }
 
-.ranking-row__trend {
+.rank-delta {
+  font-size: 0.72rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.rank-delta.up {
+  color: #34d399;
+}
+
+.rank-delta.down {
+  color: var(--color-hot);
+}
+
+.rank-delta.flat {
+  color: var(--fg-mute);
+}
+
+.leader-photo-wrap {
+  position: relative;
+  display: flex;
+}
+
+.leader-photo-wrap.leader-fire::after {
+  content: "🔥";
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
   font-size: 0.75rem;
-  text-align: center;
+  filter: drop-shadow(0 0 3px #ff5a00);
 }
 
-.trend-up {
-  color: var(--positive);
+.rank-photo .avatar {
+  width: 44px;
+  height: 44px;
+  font-size: 0.8rem;
 }
 
-.trend-down {
-  color: var(--negative);
+.rank-row.top1 .rank-photo .avatar {
+  animation: emberPulse 2.2s ease-in-out infinite;
 }
 
-.trend-flat {
-  color: var(--text-muted);
-}
-
-.ranking-row__info {
+.rank-info {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  gap: 0.1rem;
 }
 
-.ranking-row__name {
-  font-family: "Inter", sans-serif;
+.rank-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-body);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--fg);
+}
+
+.rank-sub {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--fg-dim);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ranking-row__meta {
-  font-family: "Inter", sans-serif;
-  font-size: 0.72rem;
-  color: var(--text-muted);
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.ranking-row__value {
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
+.status-dot--hot {
+  background: var(--color-hot);
+}
+
+.status-dot--warm {
+  background: var(--color-warm);
+}
+
+.status-dot--cold {
+  background: var(--color-cold);
+}
+
+.rank-metric {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rank-pct {
+  min-width: 88px;
   white-space: nowrap;
+  text-align: right;
+  font-weight: 700;
+  color: var(--theme-color);
+  font-size: 0.95rem;
+  border-radius: var(--r-sm);
+}
+
+.rank-pct.data-updated {
+  animation: dataUpdated 1s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-row.top1 .rank-photo .avatar {
+    animation: none;
+    box-shadow: 0 0 0 1px rgba(var(--gold-rgb), 0.5);
+  }
+  .rank-row.rank-up {
+    animation: none;
+    background: rgba(52, 211, 153, 0.22);
+    box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.5);
+  }
+  .rank-row.rank-down {
+    animation: none;
+    background: rgba(255, 90, 77, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 90, 77, 0.45);
+  }
+  .rank-row.celebrating {
+    animation: none;
+    background: rgba(var(--gold-rgb), 0.3);
+    box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), 0.5);
+  }
+  .rank-pct.data-updated {
+    animation: none;
+    background: rgba(56, 189, 248, 0.18);
+    box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4);
+  }
 }

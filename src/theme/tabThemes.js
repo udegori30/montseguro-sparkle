@@ -7,6 +7,7 @@ export const TABS = [
     label: "Geral · Mensal",
     subtitle: "Rank Geral (Mensal)",
     accent: "#8b5cf6",
+    accentRgb: "139, 92, 246",
     icon: "🏆",
   },
   {
@@ -14,6 +15,7 @@ export const TABS = [
     label: "Assinaturas · Hoje",
     subtitle: "Rank Diário (Assinaturas)",
     accent: "#22c55e",
+    accentRgb: "34, 197, 94",
     icon: "✍️",
   },
   {
@@ -21,6 +23,7 @@ export const TABS = [
     label: "Implantações · Hoje",
     subtitle: "Rank Diário (Implantados)",
     accent: "#f59e0b",
+    accentRgb: "245, 158, 11",
     icon: "🚀",
   },
   {
@@ -28,6 +31,7 @@ export const TABS = [
     label: "Ranking de Times",
     subtitle: "Dashboard",
     accent: "#a855f7",
+    accentRgb: "168, 85, 247",
     icon: "👥",
   },
   {
@@ -35,6 +39,7 @@ export const TABS = [
     label: "Evolução de Metas",
     subtitle: "Dashboard",
     accent: "#eab308",
+    accentRgb: "234, 179, 8",
     icon: "🎯",
   },
 ];

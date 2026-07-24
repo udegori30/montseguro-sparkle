@@ -7,7 +7,6 @@ export function AssinaturasView() {
       metricKey="todaySubscriptions"
       metricLabel="assinaturas"
       kpiLabels={{ qty: "Assinaturas Hoje", value: "Valor em Assinaturas" }}
-      rankingTitle="Rank Diário · Assinaturas"
     />
   );
 }

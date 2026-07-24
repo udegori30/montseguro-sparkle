@@ -3,7 +3,13 @@ import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { KpiCard } from "../common/KpiCard.jsx";
 import { Podium } from "../common/Podium.jsx";
 import { RankingList } from "../common/RankingList.jsx";
-import { formatCurrency, formatPercent } from "../../utils/format.js";
+import { useRankingChanges } from "../../hooks/useRankingChanges.js";
+import {
+  daysUntilEndOfMonth,
+  formatCurrency,
+  formatPercent,
+  formatResetLabel,
+} from "../../utils/format.js";
 import { getDominantTemperature } from "../../utils/consultants.js";
 import "../views/shared.css";
 
@@ -26,12 +32,16 @@ export function GeralView() {
             name: consultant.name,
             avatarUrl: consultant.avatarUrl,
             value: consultant.monthRevenue,
+            contracts: consultant.monthContracts,
             trendDelta: consultant.monthRevenue - consultant.monthRevenueYesterday,
+            temperature: temperature.key,
             secondaryMeta: `${consultant.activeLeads} leads ativos · ${temperature.icon} ${temperature.key}`,
           };
         }),
     [consultants],
   );
+
+  const changes = useRankingChanges(ranking);
 
   function handleEditGoal() {
     const input = window.prompt("Nova meta de faturamento dos times (R$):", String(goalValue));
@@ -42,8 +52,9 @@ export function GeralView() {
 
   return (
     <div className="view">
-      <div className="kpi-row">
+      <div className="kpi-strip">
         <KpiCard
+          featured
           label="Faturamento dos Times · Implantado"
           value={formatCurrency(summary.revenueTeams)}
           subtitle={`${formatPercent(goalPct)} da meta de ${formatCurrency(goalValue)}`}
@@ -56,15 +67,17 @@ export function GeralView() {
         <KpiCard label="Taxa de Conversão" value={formatPercent(summary.conversionPct, 1)} />
       </div>
 
-      <div className="section">
-        <h2 className="section-title">Pódio do Mês</h2>
-        <Podium items={ranking.slice(0, 3)} />
-      </div>
+      <Podium
+        items={ranking.slice(0, 3).map((item) => ({
+          ...item,
+          celebrating: changes.get(item.id)?.changeClass === "celebrating",
+        }))}
+        metricLabel="Vendas"
+        secondaryLabel="Contratos Fechados"
+        resetLabel={formatResetLabel(daysUntilEndOfMonth())}
+      />
 
-      <div className="section">
-        <h2 className="section-title">Ranking Geral · 18 Consultores</h2>
-        <RankingList items={ranking} />
-      </div>
+      <RankingList items={ranking} meta={`${ranking.length} consultores ativos`} changes={changes} />
     </div>
   );
 }

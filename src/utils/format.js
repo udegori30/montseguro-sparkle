@@ -75,6 +75,24 @@ export function getTrend(delta) {
   return { direction: "down", symbol: "▼", className: "trend-down" };
 }
 
+// Dias restantes ate o fim do mes/trimestre corrente - usado no contador
+// "Reset em N dias" do Podium.
+export function daysUntilEndOfMonth(date = new Date()) {
+  const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return Math.max(0, Math.ceil((end - date) / 86400000));
+}
+
+export function daysUntilEndOfQuarter(date = new Date()) {
+  const quarterEndMonth = Math.floor(date.getMonth() / 3) * 3 + 3;
+  const end = new Date(date.getFullYear(), quarterEndMonth, 0);
+  return Math.max(0, Math.ceil((end - date) / 86400000));
+}
+
+export function formatResetLabel(days) {
+  if (days <= 0) return "Reset hoje";
+  return `Reset em ${days} dia${days === 1 ? "" : "s"}`;
+}
+
 export function getInitials(name = "") {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";

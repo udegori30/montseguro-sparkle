@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
 
 const STORAGE_KEY = "montseguro:consultant-photos";
 const ConsultantPhotosContext = createContext(null);
@@ -56,4 +56,29 @@ export function useConsultantPhotos() {
     throw new Error("useConsultantPhotos deve ser usado dentro de <ConsultantPhotosProvider>");
   }
   return context;
+}
+
+// Encapsula foto resolvida (upload > fallback) + o fluxo de escolher/ler um
+// arquivo, para qualquer componente que precise de uma foto editavel por
+// consultor (Avatar, Podium) sem duplicar a leitura via FileReader.
+export function useConsultantPhotoUpload(consultantId, fallback) {
+  const { photos, setPhoto } = useConsultantPhotos();
+  const inputRef = useRef(null);
+  const photoUrl = (consultantId ? photos[consultantId] : undefined) ?? fallback;
+
+  function openPicker(event) {
+    event?.stopPropagation();
+    inputRef.current?.click();
+  }
+
+  function handleFileChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !consultantId) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(consultantId, reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  return { photoUrl, inputRef, openPicker, handleFileChange };
 }

@@ -2,12 +2,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: var(--bg-base);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 24px 0;
+  background: var(--ink-900);
 }
 
 .dashboard__content {
   flex: 1;
-  padding: 1.5rem 1.75rem 2.5rem;
+  padding: 0 0 96px;
   overflow-y: auto;
 }
 

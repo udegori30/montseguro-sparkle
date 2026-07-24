@@ -13,7 +13,15 @@ import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
 import { Podium } from "../common/Podium.jsx";
 import { GoalRankingTable } from "./GoalRankingTable.jsx";
-import { formatCurrency, formatNumber, formatPercent, getTrend } from "../../utils/format.js";
+import {
+  daysUntilEndOfMonth,
+  daysUntilEndOfQuarter,
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+  formatResetLabel,
+  getTrend,
+} from "../../utils/format.js";
 import { getTabById } from "../../theme/tabThemes.js";
 import "./shared.css";
 import "./MetasView.css";
@@ -74,7 +82,7 @@ function buildPodiumItems(rows) {
     id: row.id,
     name: row.name,
     value: row.achieved,
-    meta: `${formatNumber(row.contracts)} contratos`,
+    contracts: row.contracts,
   }));
 }
 
@@ -136,8 +144,9 @@ export function MetasView() {
 
   return (
     <div className="view">
-      <div className="kpi-row">
+      <div className="kpi-strip">
         <KpiCard
+          featured
           label="Faturamento dos Times · Implantado"
           value={formatCurrency(summary.revenueTeams)}
           subtitle={`${formatPercent(summary.revenueGoalPct)} da meta`}
@@ -179,7 +188,12 @@ export function MetasView() {
         <h2 className="section-title">Ranking de Consultores por Meta</h2>
         <div className="metas-goal-tables">
           <div className="metas-goal-block">
-            <Podium items={monthlyPodium} />
+            <Podium
+              items={monthlyPodium}
+              metricLabel="Resultado"
+              secondaryLabel="Contratos Fechados"
+              resetLabel={formatResetLabel(daysUntilEndOfMonth())}
+            />
             <GoalRankingTable
               title="Meta Mensal"
               demandLabel="Demanda/Mês"
@@ -188,7 +202,12 @@ export function MetasView() {
             />
           </div>
           <div className="metas-goal-block">
-            <Podium items={quarterlyPodium} />
+            <Podium
+              items={quarterlyPodium}
+              metricLabel="Resultado"
+              secondaryLabel="Contratos Fechados"
+              resetLabel={formatResetLabel(daysUntilEndOfQuarter())}
+            />
             <GoalRankingTable
               title="Meta Trimestral"
               demandLabel="Demanda/Trimestre"

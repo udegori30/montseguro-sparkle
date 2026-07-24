@@ -1,12 +1,13 @@
 import "./KpiCard.css";
 
-// Bloco reutilizavel: label em maiusculas, valor grande em fonte mono,
-// subtitulo opcional e, quando `progress` e informado, uma barra de meta.
-export function KpiCard({ label, value, subtitle, progress, onEditGoal }) {
+// Bloco reutilizavel do KpiStrip: eyebrow, valor grande (Space Grotesk), subtitulo
+// opcional e, quando `progress` e informado, uma barra de meta. `featured` liga
+// a aura pulsante + o valor com gradiente animado (usado no 1o card de cada view).
+export function KpiCard({ label, value, subtitle, progress, onEditGoal, featured = false }) {
   return (
-    <div className="kpi-card">
+    <div className={`kpi-card${featured ? " featured" : ""}`}>
       <div className="kpi-card__header">
-        <span className="kpi-card__label">{label}</span>
+        <span className="eyebrow">{label}</span>
         {onEditGoal && (
           <button
             type="button"
@@ -19,7 +20,7 @@ export function KpiCard({ label, value, subtitle, progress, onEditGoal }) {
           </button>
         )}
       </div>
-      <div className="kpi-card__value">{value}</div>
+      <div className={`kpi-value${featured ? " shimmer-text" : ""}`}>{value}</div>
       {subtitle && <div className="kpi-card__subtitle">{subtitle}</div>}
       {typeof progress === "number" && (
         <div className="kpi-card__progress-track">

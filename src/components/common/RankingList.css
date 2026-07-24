@@ -1,11 +1,26 @@
-.ranking-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem 1rem;
+.ranking-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
-@media (max-width: 900px) {
-  .ranking-list {
+.ranking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.ranking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .ranking-grid {
     grid-template-columns: 1fr;
   }
 }

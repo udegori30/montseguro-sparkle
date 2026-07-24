@@ -7,7 +7,6 @@ export function ImplantacoesView() {
       metricKey="todayDeployments"
       metricLabel="implantações"
       kpiLabels={{ qty: "Implantações Hoje", value: "Valor Implantado Hoje" }}
-      rankingTitle="Rank Diário · Implantações"
     />
   );
 }

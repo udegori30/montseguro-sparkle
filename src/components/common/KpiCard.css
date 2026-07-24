@@ -1,13 +1,42 @@
 .kpi-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  border-left: 3px solid var(--accent);
-  border-radius: 12px;
+  position: relative;
+  background: var(--ink-800);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
   padding: 1.1rem 1.3rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
   min-width: 0;
+  overflow: hidden;
+  transition: transform 0.2s var(--ease-smooth);
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--theme-color);
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px) scale(1.012);
+}
+
+.kpi-card:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.12) 35%, transparent 50%);
+  animation: gachaShine 0.9s ease;
+  pointer-events: none;
+}
+
+.kpi-card.featured {
+  animation: featuredAura 3.2s ease-in-out infinite;
 }
 
 .kpi-card__header {
@@ -17,19 +46,10 @@
   gap: 0.5rem;
 }
 
-.kpi-card__label {
-  font-family: "Inter", sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
 .kpi-card__edit {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--fg-dim);
   cursor: pointer;
   font-size: 0.9rem;
   line-height: 1;
@@ -39,36 +59,54 @@
 }
 
 .kpi-card__edit:hover {
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--theme-color);
+  background: rgba(var(--theme-color-rgb), 0.15);
 }
 
-.kpi-card__value {
-  font-family: "JetBrains Mono", monospace;
+.kpi-value {
+  font-family: var(--font-display);
   font-size: clamp(1.35rem, 2vw, 1.9rem);
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--fg);
   line-height: 1.15;
   font-variant-numeric: tabular-nums;
 }
 
+.kpi-value.shimmer-text {
+  background: linear-gradient(90deg, var(--theme-color) 0%, #fff 50%, var(--theme-color) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: valueShimmer 3s linear infinite;
+}
+
 .kpi-card__subtitle {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--fg-dim);
 }
 
 .kpi-card__progress-track {
   margin-top: 0.3rem;
   height: 6px;
   border-radius: 999px;
-  background: var(--bg-sunken);
+  background: var(--ink-850);
   overflow: hidden;
 }
 
 .kpi-card__progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: var(--theme-color);
   border-radius: 999px;
   transition: width 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpi-card.featured {
+    box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.24);
+  }
+  .kpi-value.shimmer-text {
+    background-position: 0 0;
+  }
 }

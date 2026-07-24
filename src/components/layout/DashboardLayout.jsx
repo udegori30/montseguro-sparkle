@@ -50,7 +50,14 @@ export function DashboardLayout() {
   const handleSelectTab = useCallback((id) => navigate(`/${id}`), [navigate]);
 
   const ActiveView = VIEW_COMPONENTS[activeTab.id] ?? GeralView;
-  const style = useMemo(() => ({ "--accent": activeTab.accent }), [activeTab.accent]);
+  const style = useMemo(
+    () => ({
+      "--accent": activeTab.accent,
+      "--theme-color": activeTab.accent,
+      "--theme-color-rgb": activeTab.accentRgb,
+    }),
+    [activeTab.accent, activeTab.accentRgb],
+  );
 
   return (
     <div className="dashboard" style={style}>

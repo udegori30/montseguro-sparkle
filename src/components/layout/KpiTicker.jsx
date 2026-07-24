@@ -19,20 +19,25 @@ function buildItems(kpis) {
   ];
 }
 
-// Regiao 3 do layout: faixa horizontal rolante de KPIs.
-// O conteudo e duplicado para permitir um loop de rolagem continuo via CSS.
+// Regiao 3 do layout: faixa horizontal rolante de KPIs, com uma capa fixa
+// "AO VIVO" a esquerda. O conteudo e duplicado para permitir um loop de
+// rolagem continuo via CSS (tickerScroll); pausa ao passar o mouse.
 export function KpiTicker({ kpis }) {
   if (!kpis) return null;
   const items = buildItems(kpis);
 
   return (
-    <div className="kpi-ticker">
-      <div className="kpi-ticker__track">
-        <div className="kpi-ticker__content">
+    <div className="ticker">
+      <div className="ticker__cap">
+        <span className="live-dot" aria-hidden="true" />
+        <span>LIVE</span>
+      </div>
+      <div className="ticker__viewport">
+        <div className="ticker-track">
           {items.concat(items).map((item, index) => (
-            <span className="kpi-ticker__item" key={`${item.label}-${index}`}>
-              <span className="kpi-ticker__label">{item.label}</span>
-              <span className="kpi-ticker__value">{item.value}</span>
+            <span className="ticker__item" key={`${item.label}-${index}`}>
+              <span className="ticker__label">{item.label}</span>
+              <span className="ticker__value num">{item.value}</span>
             </span>
           ))}
         </div>
