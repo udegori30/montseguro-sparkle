@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
@@ -29,14 +29,8 @@ function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, con
     .sort((a, b) => b.pct - a.pct);
 }
 
-// Soma o alcancado e a demanda (ja com overrides de useEditableGoals) de um
-// conjunto de linhas - usado no card de faturamento do time trimestral, que
-// nao tem (como o mensal) uma meta coletiva fixa definida em `summary`.
-function sumGoalTotals(rows) {
-  const achieved = rows.reduce((sum, row) => sum + row.achieved, 0);
-  const demand = rows.reduce((sum, row) => sum + row.demand, 0);
-  const pct = demand > 0 ? (achieved / demand) * 100 : 0;
-  return { achieved, pct: Number(pct.toFixed(1)) };
+function sumAchieved(rows) {
+  return rows.reduce((sum, row) => sum + row.achieved, 0);
 }
 
 // Aba "Evolução de Metas": ranking de consultores por meta mensal/trimestral,
@@ -44,6 +38,8 @@ function sumGoalTotals(rows) {
 export function MetasView() {
   const { consultants, summary } = useDashboardData();
   const { getGoal, setGoal } = useEditableGoals();
+  const [monthlyGoalOverride, setMonthlyGoalOverride] = useState(null);
+  const [quarterlyGoalOverride, setQuarterlyGoalOverride] = useState(null);
 
   const monthlyRows = useMemo(
     () =>
@@ -69,7 +65,12 @@ export function MetasView() {
     [consultants, getGoal],
   );
 
-  const quarterlyTotals = useMemo(() => sumGoalTotals(quarterlyRows), [quarterlyRows]);
+  const monthlyGoalValue = monthlyGoalOverride ?? summary.revenueGoalValue;
+  const monthlyGoalPct = Number(((summary.revenueTeams / monthlyGoalValue) * 100).toFixed(1));
+
+  const quarterlyAchieved = useMemo(() => sumAchieved(quarterlyRows), [quarterlyRows]);
+  const quarterlyGoalValue = quarterlyGoalOverride ?? summary.revenueGoalValueQuarterly;
+  const quarterlyGoalPct = Number(((quarterlyAchieved / quarterlyGoalValue) * 100).toFixed(1));
 
   function handleEditDemand(period, periodLabel) {
     return (consultantId, currentValue) => {
@@ -80,6 +81,15 @@ export function MetasView() {
     };
   }
 
+  function handleEditCollectiveGoal(currentValue, label, setOverride) {
+    return () => {
+      const input = window.prompt(`Nova meta de ${label} (R$):`, String(currentValue));
+      if (input === null) return;
+      const parsed = Number(input.replace(/[^\d]/g, ""));
+      if (Number.isFinite(parsed) && parsed > 0) setOverride(parsed);
+    };
+  }
+
   return (
     <div className="view">
       <div className="kpi-strip">
@@ -87,15 +97,21 @@ export function MetasView() {
           featured
           label="Faturamento do Time · Implantado | Mês"
           value={formatCurrency(summary.revenueTeams)}
-          subtitle={`${formatPercent(summary.revenueGoalPct)} da meta`}
-          progress={summary.revenueGoalPct}
+          subtitle={`${formatPercent(monthlyGoalPct)} da meta de ${formatCurrency(monthlyGoalValue)}`}
+          progress={monthlyGoalPct}
+          onEditGoal={handleEditCollectiveGoal(monthlyGoalValue, "faturamento mensal", setMonthlyGoalOverride)}
         />
         <KpiCard
           featured
           label="Faturamento do Time · Implantado | Trimestre"
-          value={formatCurrency(quarterlyTotals.achieved)}
-          subtitle={`${formatPercent(quarterlyTotals.pct)} da meta`}
-          progress={quarterlyTotals.pct}
+          value={formatCurrency(quarterlyAchieved)}
+          subtitle={`${formatPercent(quarterlyGoalPct)} da meta de ${formatCurrency(quarterlyGoalValue)}`}
+          progress={quarterlyGoalPct}
+          onEditGoal={handleEditCollectiveGoal(
+            quarterlyGoalValue,
+            "faturamento trimestral",
+            setQuarterlyGoalOverride,
+          )}
         />
       </div>
 

@@ -168,10 +168,14 @@ export function createMockDataset() {
 
   const revenueTeams = teams.reduce((sum, t) => sum + t.implantado, 0);
   const revenueGoalValue = 1600000;
+  // Sem meta coletiva trimestral definida a parte - usa 3x a meta mensal
+  // como ponto de partida (mesma proporcao usada nas metas por consultor).
+  const revenueGoalValueQuarterly = revenueGoalValue * 3;
   const totalMonthContracts = consultants.reduce((sum, c) => sum + c.monthContracts, 0);
   const summary = {
     revenueTeams,
     revenueGoalValue,
+    revenueGoalValueQuarterly,
     revenueGoalPct: Number(((revenueTeams / revenueGoalValue) * 100).toFixed(1)),
     analysisMonth: teams.reduce((sum, t) => sum + t.analise, 0),
     awaitingPayment: teams.reduce((sum, t) => sum + t.emPagamento, 0),
