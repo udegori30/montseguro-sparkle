@@ -31,10 +31,6 @@
   letter-spacing: 0.07em;
 }
 
-.header__titles {
-  min-width: 0;
-}
-
 .header__title {
   margin: 0;
   font-family: var(--font-display);
@@ -47,14 +43,6 @@
 .header__title-accent {
   color: #34d399;
   transition: color 0.4s ease;
-}
-
-.header__subtitle {
-  margin: 0.05rem 0 0;
-  font-size: 0.62rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .header__right {

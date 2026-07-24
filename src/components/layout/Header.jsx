@@ -12,10 +12,9 @@ function handleExit() {
   window.close();
 }
 
-// Regiao 1 do layout: selo "AO VIVO", titulo/subtitulo por aba, as abas de
-// navegacao (na mesma linha, para economizar altura) e as acoes de pausar
-// e sair.
-export function Header({ activeTab, isPaused, onTogglePause, tabs, activeTabId, onSelectTab }) {
+// Regiao 1 do layout: selo "AO VIVO", titulo do app, as abas de navegacao
+// (na mesma linha, para economizar altura) e as acoes de pausar e sair.
+export function Header({ isPaused, onTogglePause, tabs, activeTabId, onSelectTab }) {
   const now = useClock();
 
   return (
@@ -25,12 +24,9 @@ export function Header({ activeTab, isPaused, onTogglePause, tabs, activeTabId, 
           <span className="live-dot" aria-hidden="true" />
           AO VIVO
         </span>
-        <div className="header__titles">
-          <h1 className="header__title">
-            {APP_TITLE_PREFIX} <span className="header__title-accent">{APP_NAME}</span>
-          </h1>
-          <p className="header__subtitle eyebrow">{activeTab.subtitle}</p>
-        </div>
+        <h1 className="header__title">
+          {APP_TITLE_PREFIX} <span className="header__title-accent">{APP_NAME}</span>
+        </h1>
       </div>
 
       <TabNav tabs={tabs} activeId={activeTabId} onSelect={onSelectTab} />

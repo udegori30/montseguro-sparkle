@@ -77,7 +77,6 @@ export function DashboardLayout() {
         <div className="chrome-content">
           <div className="chrome-inner">
             <Header
-              activeTab={activeTab}
               isPaused={isPaused}
               onTogglePause={togglePause}
               tabs={TABS}
