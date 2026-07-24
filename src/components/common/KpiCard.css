@@ -41,9 +41,10 @@
 
 .kpi-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
+  min-height: 2rem;
 }
 
 .kpi-card__edit {
