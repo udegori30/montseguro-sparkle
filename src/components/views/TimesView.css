@@ -176,8 +176,9 @@
   font-size: 0.62rem;
   line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .team-card__quadrant-value {
