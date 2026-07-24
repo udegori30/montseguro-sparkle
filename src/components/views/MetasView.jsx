@@ -1,48 +1,11 @@
 import { useMemo } from "react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { KpiCard } from "../common/KpiCard.jsx";
 import { GoalRankingTable } from "./GoalRankingTable.jsx";
-import { formatCurrency, formatNumber, formatPercent, getTrend } from "../../utils/format.js";
-import { getTabById } from "../../theme/tabThemes.js";
+import { formatCurrency, formatPercent } from "../../utils/format.js";
 import "./shared.css";
 import "./MetasView.css";
-
-const { accent } = getTabById("metas");
-
-function ChartTooltip({ active, payload, label }) {
-  if (!active || !payload?.length) return null;
-  const point = payload[0].payload;
-  const trend = point.dayOverDayPct == null ? null : getTrend(point.dayOverDayPct);
-  return (
-    <div className="metas-tooltip">
-      <strong>{label}</strong>
-      <span>{formatCurrency(point.revenue)} de resultado no dia</span>
-      <span>
-        {formatCurrency(point.contractsSignedValue)} · {formatNumber(point.contractsSigned)} contratos
-        assinados
-      </span>
-      <span>
-        {formatCurrency(point.contractsDeployedValue)} · {formatNumber(point.contractsDeployed)} contratos
-        implantados
-      </span>
-      {trend && (
-        <span className={trend.className}>
-          {trend.symbol} {formatPercent(Math.abs(point.dayOverDayPct), 1)} vs. dia anterior
-        </span>
-      )}
-    </div>
-  );
-}
 
 // Monta as linhas de uma tabela de ranking por meta, ja ordenadas da maior
 // para a menor % de atingimento. `period` ("monthly"|"quarterly") define
@@ -66,11 +29,20 @@ function buildGoalRows(consultants, { period, defaultDemandKey, achievedKey, con
     .sort((a, b) => b.pct - a.pct);
 }
 
-// Aba "Evolução de Metas": reaproveita os KPIs da visao mensal, adiciona um
-// grafico de area com o progresso da meta coletiva e o ranking de
-// consultores por meta mensal/trimestral (com metas editaveis).
+// Soma o alcancado e a demanda (ja com overrides de useEditableGoals) de um
+// conjunto de linhas - usado no card de faturamento do time trimestral, que
+// nao tem (como o mensal) uma meta coletiva fixa definida em `summary`.
+function sumGoalTotals(rows) {
+  const achieved = rows.reduce((sum, row) => sum + row.achieved, 0);
+  const demand = rows.reduce((sum, row) => sum + row.demand, 0);
+  const pct = demand > 0 ? (achieved / demand) * 100 : 0;
+  return { achieved, pct: Number(pct.toFixed(1)) };
+}
+
+// Aba "Evolução de Metas": ranking de consultores por meta mensal/trimestral,
+// com metas editaveis (useEditableGoals).
 export function MetasView() {
-  const { consultants, summary, goalsEvolution } = useDashboardData();
+  const { consultants, summary } = useDashboardData();
   const { getGoal, setGoal } = useEditableGoals();
 
   const monthlyRows = useMemo(
@@ -97,18 +69,7 @@ export function MetasView() {
     [consultants, getGoal],
   );
 
-  const chartData = useMemo(
-    () =>
-      goalsEvolution.map((point, index) => {
-        const previous = goalsEvolution[index - 1];
-        const dayOverDayPct =
-          previous && previous.revenue > 0
-            ? ((point.revenue - previous.revenue) / previous.revenue) * 100
-            : null;
-        return { ...point, dayOverDayPct };
-      }),
-    [goalsEvolution],
-  );
+  const quarterlyTotals = useMemo(() => sumGoalTotals(quarterlyRows), [quarterlyRows]);
 
   function handleEditDemand(period, periodLabel) {
     return (consultantId, currentValue) => {
@@ -124,41 +85,18 @@ export function MetasView() {
       <div className="kpi-strip">
         <KpiCard
           featured
-          label="Faturamento dos Times · Implantado"
+          label="Faturamento do Time · Implantado | Mês"
           value={formatCurrency(summary.revenueTeams)}
           subtitle={`${formatPercent(summary.revenueGoalPct)} da meta`}
           progress={summary.revenueGoalPct}
         />
-        <KpiCard label="Análise · Mês" value={formatCurrency(summary.analysisMonth)} />
-        <KpiCard label="Aguardando Pagamento · Mês" value={formatCurrency(summary.awaitingPayment)} />
-        <KpiCard label="Ticket Médio" value={formatCurrency(summary.ticketMedio)} />
-      </div>
-
-      <div className="section">
-        <h2 className="section-title">Evolução de Resultado (14 dias)</h2>
-        <div className="metas-chart">
-          <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="metaGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={accent} stopOpacity={0.5} />
-                  <stop offset="100%" stopColor={accent} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
-              <XAxis dataKey="date" stroke="var(--text-muted)" fontSize={12} />
-              <YAxis stroke="var(--text-muted)" fontSize={12} unit="%" domain={[0, 100]} />
-              <Tooltip content={<ChartTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="goalPct"
-                stroke={accent}
-                strokeWidth={2}
-                fill="url(#metaGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        <KpiCard
+          featured
+          label="Faturamento do Time · Implantado | Trimestre"
+          value={formatCurrency(quarterlyTotals.achieved)}
+          subtitle={`${formatPercent(quarterlyTotals.pct)} da meta`}
+          progress={quarterlyTotals.pct}
+        />
       </div>
 
       <div className="section">

@@ -12,7 +12,9 @@
   gap: 14px;
 }
 
-.kpi-strip > .kpi-card:first-child.featured {
+/* So espicha o 1o card quando ha 3+ cards no total - com exatamente 2
+   (ex.: MetasView), o auto-fit ja reparte a linha meio a meio sozinho. */
+.kpi-strip > .kpi-card:first-child.featured:nth-last-child(n + 3) {
   grid-column: span 2;
 }
 
