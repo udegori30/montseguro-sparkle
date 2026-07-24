@@ -10,6 +10,7 @@ import { AssinaturasView } from "../views/AssinaturasView.jsx";
 import { ImplantacoesView } from "../views/ImplantacoesView.jsx";
 import { TimesView } from "../views/TimesView.jsx";
 import { MetasView } from "../views/MetasView.jsx";
+import { PrevisaoView } from "../views/PrevisaoView.jsx";
 import "./DashboardLayout.css";
 
 const CAROUSEL_INTERVAL_MS = Number(import.meta.env.VITE_CAROUSEL_INTERVAL_MS) || 20000;
@@ -20,6 +21,7 @@ const VIEW_COMPONENTS = {
   implantacoes: ImplantacoesView,
   times: TimesView,
   metas: MetasView,
+  previsao: PrevisaoView,
 };
 
 // Compoe as 4 regioes fixas da tela e liga o carrossel de abas a rota atual

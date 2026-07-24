@@ -99,6 +99,10 @@ function buildConsultant(index) {
     quarterRevenue: Math.max(0, monthRevenue * 3 + randomInt(-30000, 30000)),
     quarterlyGoal: randomInt(270000, 480000),
     quarterContracts: Math.max(monthContracts, monthContracts * 3 + randomInt(-4, 6)),
+    // Valor assinado do mes (etapa anterior ao implantado) e sua meta,
+    // usados no ranking da aba Previsao · Mes.
+    monthSigned: monthRevenue + randomInt(5000, 40000),
+    signedGoal: randomInt(90000, 160000),
   };
 }
 

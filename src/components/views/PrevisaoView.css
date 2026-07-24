@@ -1,0 +1,19 @@
+.previsao-table-wrap {
+  max-width: 640px;
+}
+
+.previsao-table__cell {
+  white-space: normal;
+}
+
+.previsao-table__value {
+  display: block;
+}
+
+.previsao-table__goal {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}

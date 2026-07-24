@@ -42,6 +42,14 @@ export const TABS = [
     accentRgb: "234, 179, 8",
     icon: "🎯",
   },
+  {
+    id: "previsao",
+    label: "Previsão · Mês",
+    subtitle: "Dashboard",
+    accent: "#06b6d4",
+    accentRgb: "6, 182, 212",
+    icon: "📈",
+  },
 ];
 
 export const DEFAULT_TAB_ID = TABS[0].id;
