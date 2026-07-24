@@ -6,7 +6,7 @@ export function ImplantacoesView() {
     <DailyMetricView
       metricKey="todayDeployments"
       metricLabel="implantações"
-      kpiLabels={{ qty: "Implantações Hoje", value: "Valor Implantado Hoje" }}
+      kpiLabels={{ qty: "Contratos Implantados", value: "Valor Implantado Hoje" }}
     />
   );
 }

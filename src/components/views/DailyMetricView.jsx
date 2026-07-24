@@ -45,8 +45,8 @@ export function DailyMetricView({ metricKey, metricLabel, kpiLabels }) {
   return (
     <div className="view">
       <div className="kpi-strip">
-        <KpiCard featured label={kpiLabels.qty} value={formatNumber(totals.qty)} />
-        <KpiCard label={kpiLabels.value} value={formatCurrency(totals.value)} />
+        <KpiCard featured label={kpiLabels.value} value={formatCurrency(totals.value)} />
+        <KpiCard label={kpiLabels.qty} value={formatNumber(totals.qty)} />
         <KpiCard label="Ticket Médio" value={formatCurrency(averageTicket)} />
       </div>
 

@@ -6,7 +6,7 @@ export function AssinaturasView() {
     <DailyMetricView
       metricKey="todaySubscriptions"
       metricLabel="assinaturas"
-      kpiLabels={{ qty: "Assinaturas Hoje", value: "Valor em Assinaturas" }}
+      kpiLabels={{ qty: "Contratos Assinados", value: "Valor em Assinaturas" }}
     />
   );
 }
