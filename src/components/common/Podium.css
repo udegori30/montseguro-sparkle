@@ -21,9 +21,8 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 1.1rem;
+  gap: 0.9rem;
   padding: 2rem 0.5rem 0;
-  flex-wrap: wrap;
 }
 
 .podium-card {
@@ -31,7 +30,10 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  width: 220px;
+  /* Nao cresce alem do tamanho preferido, mas encolhe junto com o container
+     (ex.: coluna estreita do lead-split) em vez de quebrar linha. */
+  flex: 0 1 220px;
+  min-width: 110px;
   border-radius: var(--r-lg);
   overflow: hidden;
   animation: riseIn 0.5s var(--ease-smooth) both;
@@ -43,7 +45,8 @@
 }
 
 .podium-card--1 {
-  width: 260px;
+  flex-basis: 260px;
+  min-width: 130px;
   height: 408px;
   margin-bottom: 40px;
   z-index: 2;
@@ -287,8 +290,12 @@
 
 @media (max-width: 640px) {
   .podium-card {
-    width: 150px;
+    flex-basis: 105px;
     height: 260px !important;
     margin-bottom: 0 !important;
+  }
+
+  .podium-card--1 {
+    flex-basis: 125px;
   }
 }

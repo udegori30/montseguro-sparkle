@@ -50,17 +50,19 @@ export function DailyMetricView({ metricKey, metricLabel, kpiLabels }) {
         <KpiCard label="Ticket Médio" value={formatCurrency(averageTicket)} />
       </div>
 
-      <Podium
-        items={ranking.slice(0, 3).map((item) => ({
-          ...item,
-          celebrating: changes.get(item.id)?.changeClass === "celebrating",
-        }))}
-        metricLabel="Vendas"
-        secondaryLabel="Contratos Fechados"
-        resetLabel="Reinicia à meia-noite"
-      />
+      <div className="lead-split">
+        <Podium
+          items={ranking.slice(0, 3).map((item) => ({
+            ...item,
+            celebrating: changes.get(item.id)?.changeClass === "celebrating",
+          }))}
+          metricLabel="Vendas"
+          secondaryLabel="Contratos Fechados"
+          resetLabel="Reinicia à meia-noite"
+        />
 
-      <RankingList items={ranking} meta={`${ranking.length} consultores ativos`} changes={changes} />
+        <RankingList items={ranking} meta={`${ranking.length} consultores ativos`} changes={changes} />
+      </div>
     </div>
   );
 }

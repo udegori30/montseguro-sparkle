@@ -67,17 +67,19 @@ export function GeralView() {
         <KpiCard label="Taxa de Conversão" value={formatPercent(summary.conversionPct, 1)} />
       </div>
 
-      <Podium
-        items={ranking.slice(0, 3).map((item) => ({
-          ...item,
-          celebrating: changes.get(item.id)?.changeClass === "celebrating",
-        }))}
-        metricLabel="Vendas"
-        secondaryLabel="Contratos Fechados"
-        resetLabel={formatResetLabel(daysUntilEndOfMonth())}
-      />
+      <div className="lead-split">
+        <Podium
+          items={ranking.slice(0, 3).map((item) => ({
+            ...item,
+            celebrating: changes.get(item.id)?.changeClass === "celebrating",
+          }))}
+          metricLabel="Vendas"
+          secondaryLabel="Contratos Fechados"
+          resetLabel={formatResetLabel(daysUntilEndOfMonth())}
+        />
 
-      <RankingList items={ranking} meta={`${ranking.length} consultores ativos`} changes={changes} />
+        <RankingList items={ranking} meta={`${ranking.length} consultores ativos`} changes={changes} />
+      </div>
     </div>
   );
 }
