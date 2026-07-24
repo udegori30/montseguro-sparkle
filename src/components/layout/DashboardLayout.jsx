@@ -34,6 +34,9 @@ export function DashboardLayout() {
   const activeTab = getTabById(tabId ?? DEFAULT_TAB_ID);
   const data = useDashboardData();
   const [isSummariesOpen, setSummariesOpen] = useState(false);
+  const [isChromePinned, setChromePinned] = useState(false);
+  const [isChromeHovering, setChromeHovering] = useState(false);
+  const isChromeVisible = isChromePinned || isChromeHovering;
 
   const handleAdvance = useCallback(
     (nextId) => navigate(`/${nextId}`, { replace: true }),
@@ -61,15 +64,34 @@ export function DashboardLayout() {
 
   return (
     <div className="dashboard" style={style}>
-      <Header
-        activeTab={activeTab}
-        isPaused={isPaused}
-        onTogglePause={togglePause}
-        onOpenSummaries={() => setSummariesOpen(true)}
-      />
-      <TabNav tabs={TABS} activeId={activeTab.id} onSelect={handleSelectTab} />
-      <CarouselProgressBar progress={progress} />
-      <KpiTicker kpis={data.kpis} />
+      <div
+        className={`chrome-zone${isChromeVisible ? " chrome-zone--visible" : ""}`}
+        onMouseEnter={() => setChromeHovering(true)}
+        onMouseLeave={() => setChromeHovering(false)}
+      >
+        <button
+          type="button"
+          className="chrome-handle"
+          onClick={() => setChromePinned((prev) => !prev)}
+          aria-label={isChromePinned ? "Ocultar cabeçalho" : "Manter cabeçalho visível"}
+          title={isChromePinned ? "Ocultar cabeçalho" : "Manter cabeçalho visível"}
+        >
+          {isChromeVisible ? "▴" : "▾"}
+        </button>
+        <div className="chrome-content">
+          <div className="chrome-inner">
+            <Header
+              activeTab={activeTab}
+              isPaused={isPaused}
+              onTogglePause={togglePause}
+              onOpenSummaries={() => setSummariesOpen(true)}
+            />
+            <TabNav tabs={TABS} activeId={activeTab.id} onSelect={handleSelectTab} />
+            <CarouselProgressBar progress={progress} />
+            <KpiTicker kpis={data.kpis} />
+          </div>
+        </div>
+      </div>
 
       <main className="dashboard__content">
         {data.status === "error" && (

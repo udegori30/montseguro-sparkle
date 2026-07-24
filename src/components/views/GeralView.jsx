@@ -35,7 +35,7 @@ export function GeralView() {
             contracts: consultant.monthContracts,
             trendDelta: consultant.monthRevenue - consultant.monthRevenueYesterday,
             temperature: temperature.key,
-            secondaryMeta: `${consultant.activeLeads} leads ativos · ${temperature.icon} ${temperature.key}`,
+            secondaryMeta: `${consultant.monthContracts} contratos · ${temperature.icon} ${temperature.key}`,
           };
         }),
     [consultants],
@@ -55,7 +55,7 @@ export function GeralView() {
       <div className="kpi-strip">
         <KpiCard
           featured
-          label="Faturamento dos Times · Implantado"
+          label="Faturamento - Implantado"
           value={formatCurrency(summary.revenueTeams)}
           subtitle={`${formatPercent(goalPct)} da demanda de ${formatCurrency(goalValue)}`}
           progress={goalPct}

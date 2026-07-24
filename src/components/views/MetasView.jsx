@@ -95,7 +95,7 @@ export function MetasView() {
       <div className="kpi-strip">
         <KpiCard
           featured
-          label="Faturamento do Time · Implantado | Mês"
+          label="Faturamento - Implantado | Mês"
           value={formatCurrency(summary.revenueTeams)}
           subtitle={`${formatPercent(monthlyGoalPct)} da demanda de ${formatCurrency(monthlyGoalValue)}`}
           progress={monthlyGoalPct}
@@ -103,7 +103,7 @@ export function MetasView() {
         />
         <KpiCard
           featured
-          label="Faturamento do Time · Implantado | Trimestre"
+          label="Faturamento - Implantado | Trimestre"
           value={formatCurrency(quarterlyAchieved)}
           subtitle={`${formatPercent(quarterlyGoalPct)} da demanda de ${formatCurrency(quarterlyGoalValue)}`}
           progress={quarterlyGoalPct}

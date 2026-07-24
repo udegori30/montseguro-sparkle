@@ -12,8 +12,8 @@
 
 .team-card {
   --team-color: var(--accent);
-  flex: 1 1 260px;
-  max-width: 300px;
+  flex: 1 1 300px;
+  max-width: 340px;
   display: flex;
   flex-direction: column;
   background: var(--bg-elevated);
@@ -28,8 +28,8 @@
 }
 
 .team-card--rank-1 {
-  max-width: 330px;
-  flex-basis: 290px;
+  max-width: 370px;
+  flex-basis: 330px;
   transform: translateY(-16px);
   border-color: var(--team-color);
   box-shadow: 0 0 32px color-mix(in srgb, var(--team-color) 45%, transparent);
@@ -142,52 +142,66 @@
 }
 
 .team-card__stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
   padding: 0.9rem;
 }
 
-.team-card__stat {
-  position: relative;
+.team-card__quadrant-row {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.team-card__quadrant {
+  flex: 1;
+  min-width: 0;
   background: var(--bg-sunken);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  padding: 0.55rem 0.7rem;
+  padding: 0.5rem 0.55rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  overflow: hidden;
+  gap: 0.3rem;
 }
 
-.team-card__stat::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 14px;
-  height: 14px;
-  background: linear-gradient(135deg, transparent 50%, var(--bg-base) 51%);
+.team-card__quadrant--wide {
+  padding: 0.85rem 1rem;
 }
 
-.team-card__stat span {
+.team-card__quadrant-label {
   font-family: "Inter", sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--text-muted);
 }
 
-.team-card__stat strong {
+.team-card__quadrant-value {
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.95rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--team-color);
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
-.team-card__stat-value--accent {
-  color: var(--team-color) !important;
+.team-card__quadrant--wide .team-card__quadrant-value {
+  font-size: 1.4rem;
+}
+
+.team-card__quadrant-qty {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.team-card__quadrant--wide .team-card__quadrant-qty {
+  font-size: 0.95rem;
 }
 
 @media (max-width: 1000px) {

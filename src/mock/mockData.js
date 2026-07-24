@@ -107,6 +107,11 @@ function buildTeam(identity, consultants) {
   const implantado = teamConsultants.reduce((sum, c) => sum + c.monthRevenue, 0);
   const analise = teamConsultants.reduce((sum, c) => sum + c.analysisMonth, 0);
   const emPagamento = teamConsultants.reduce((sum, c) => sum + c.awaitingPayment, 0);
+  // Qtd de contratos por estagio - exibida junto do valor em cada quadrante
+  // do card do Ranking de Times.
+  const analiseContratos = randomInt(1, 8);
+  const emPagamentoContratos = randomInt(1, 6);
+  const implantadoContratos = randomInt(1, 6);
   return {
     id: identity.id,
     name: identity.name,
@@ -119,10 +124,10 @@ function buildTeam(identity, consultants) {
     emPagamento,
     previsaoTotalMes: implantado + analise + emPagamento,
     // Metricas exibidas no card do Ranking de Times.
-    valorContratos: implantado,
-    qtdContratos: randomInt(1, 6),
-    volumeAtendimento: randomFloat(30, 220, 2),
-    conversaoPct: randomFloat(0, 12, 2),
+    analiseContratos,
+    emPagamentoContratos,
+    implantadoContratos,
+    previsaoTotalContratos: analiseContratos + emPagamentoContratos + implantadoContratos,
   };
 }
 

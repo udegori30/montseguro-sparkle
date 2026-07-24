@@ -1,8 +1,17 @@
 import { useRef, useState } from "react";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
-import { formatCurrency, formatDecimal, formatPercent } from "../../utils/format.js";
+import { formatCurrency, formatNumber } from "../../utils/format.js";
 import "./shared.css";
 import "./TimesView.css";
+
+// Quadrantes exibidos no card de cada time: Analise/Em Pagamento/Implantado
+// lado a lado, e Previsao Total abaixo, maior. Cada um mostra valor + qtd
+// de contratos.
+const QUADRANTS = [
+  { key: "analise", contractsKey: "analiseContratos", label: "Análise" },
+  { key: "emPagamento", contractsKey: "emPagamentoContratos", label: "Em Pagamento" },
+  { key: "implantado", contractsKey: "implantadoContratos", label: "Implantado" },
+];
 
 const CREST_STORAGE_KEY = "montseguro:team-crests";
 
@@ -156,23 +165,27 @@ export function TimesView() {
                 </div>
 
                 <div className="team-card__stats">
-                  <div className="team-card__stat">
-                    <span>Valor Contratos</span>
-                    <strong className="team-card__stat-value--accent">
-                      {formatCurrency(team.valorContratos)}
+                  <div className="team-card__quadrant-row">
+                    {QUADRANTS.map((quadrant) => (
+                      <div className="team-card__quadrant" key={quadrant.key}>
+                        <span className="team-card__quadrant-label">{quadrant.label}</span>
+                        <strong className="team-card__quadrant-value">
+                          {formatCurrency(team[quadrant.key])}
+                        </strong>
+                        <span className="team-card__quadrant-qty">
+                          {formatNumber(team[quadrant.contractsKey])} contratos
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="team-card__quadrant team-card__quadrant--wide">
+                    <span className="team-card__quadrant-label">Previsão Total</span>
+                    <strong className="team-card__quadrant-value">
+                      {formatCurrency(team.previsaoTotalMes)}
                     </strong>
-                  </div>
-                  <div className="team-card__stat">
-                    <span>Qtd Contratos</span>
-                    <strong>{team.qtdContratos}</strong>
-                  </div>
-                  <div className="team-card__stat">
-                    <span>Volume Atend.</span>
-                    <strong>{formatDecimal(team.volumeAtendimento)}</strong>
-                  </div>
-                  <div className="team-card__stat">
-                    <span>Conversão</span>
-                    <strong>{formatPercent(team.conversaoPct, 2)}</strong>
+                    <span className="team-card__quadrant-qty">
+                      {formatNumber(team.previsaoTotalContratos)} contratos
+                    </span>
                   </div>
                 </div>
               </div>
