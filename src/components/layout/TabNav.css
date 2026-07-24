@@ -2,8 +2,8 @@
   display: flex;
   align-items: stretch;
   flex-shrink: 0;
-  gap: 0.2rem;
-  padding: 0.25rem;
+  gap: 0.15rem;
+  padding: 0.2rem;
   border-radius: var(--r-md);
   background: var(--ink-850);
   border: 1px solid var(--line);
@@ -12,14 +12,14 @@
 .tab-btn {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.7rem;
+  gap: 0.3rem;
+  padding: 0.32rem 0.5rem;
   background: none;
   border: none;
   border-radius: var(--r-sm);
   color: var(--fg-dim);
   font-family: var(--font-body);
-  font-size: 0.74rem;
+  font-size: 0.66rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
