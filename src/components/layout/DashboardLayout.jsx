@@ -4,10 +4,7 @@ import { TABS, TAB_IDS, DEFAULT_TAB_ID, getTabById } from "../../theme/tabThemes
 import { useCarousel } from "../../hooks/useCarousel.js";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
 import { Header } from "./Header.jsx";
-import { TabNav } from "./TabNav.jsx";
 import { CarouselProgressBar } from "./CarouselProgressBar.jsx";
-import { KpiTicker } from "./KpiTicker.jsx";
-import { PreviousSummariesModal } from "./PreviousSummariesModal.jsx";
 import { GeralView } from "../views/GeralView.jsx";
 import { AssinaturasView } from "../views/AssinaturasView.jsx";
 import { ImplantacoesView } from "../views/ImplantacoesView.jsx";
@@ -33,7 +30,6 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const activeTab = getTabById(tabId ?? DEFAULT_TAB_ID);
   const data = useDashboardData();
-  const [isSummariesOpen, setSummariesOpen] = useState(false);
   const [isChromePinned, setChromePinned] = useState(false);
   const [isChromeHovering, setChromeHovering] = useState(false);
   const isChromeVisible = isChromePinned || isChromeHovering;
@@ -84,11 +80,11 @@ export function DashboardLayout() {
               activeTab={activeTab}
               isPaused={isPaused}
               onTogglePause={togglePause}
-              onOpenSummaries={() => setSummariesOpen(true)}
+              tabs={TABS}
+              activeTabId={activeTab.id}
+              onSelectTab={handleSelectTab}
             />
-            <TabNav tabs={TABS} activeId={activeTab.id} onSelect={handleSelectTab} />
             <CarouselProgressBar progress={progress} />
-            <KpiTicker kpis={data.kpis} />
           </div>
         </div>
       </div>
@@ -111,8 +107,6 @@ export function DashboardLayout() {
           </div>
         )}
       </main>
-
-      {isSummariesOpen && <PreviousSummariesModal onClose={() => setSummariesOpen(false)} />}
     </div>
   );
 }

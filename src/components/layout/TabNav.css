@@ -1,26 +1,25 @@
 .tabs-bar {
   display: flex;
   align-items: stretch;
-  gap: 0.35rem;
-  padding: 0.4rem;
-  margin-bottom: 0.6rem;
+  flex-shrink: 0;
+  gap: 0.2rem;
+  padding: 0.25rem;
   border-radius: var(--r-md);
   background: var(--ink-850);
   border: 1px solid var(--line);
-  overflow-x: auto;
 }
 
 .tab-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1rem;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
   background: none;
   border: none;
   border-radius: var(--r-sm);
   color: var(--fg-dim);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.74rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -39,7 +38,7 @@
 }
 
 .tab-btn__icon {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

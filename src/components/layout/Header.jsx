@@ -1,6 +1,7 @@
 import { useClock } from "../../hooks/useClock.js";
 import { formatClock, formatDateLong } from "../../utils/format.js";
 import { APP_NAME, APP_TITLE_PREFIX } from "../../config/appConfig.js";
+import { TabNav } from "./TabNav.jsx";
 import "./Header.css";
 
 function handleExit() {
@@ -11,9 +12,10 @@ function handleExit() {
   window.close();
 }
 
-// Regiao 1 do layout: selo "AO VIVO", titulo/subtitulo por aba, data/relogio
-// e as acoes de pausar, rever resumos e sair.
-export function Header({ activeTab, isPaused, onTogglePause, onOpenSummaries }) {
+// Regiao 1 do layout: selo "AO VIVO", titulo/subtitulo por aba, as abas de
+// navegacao (na mesma linha, para economizar altura) e as acoes de pausar
+// e sair.
+export function Header({ activeTab, isPaused, onTogglePause, tabs, activeTabId, onSelectTab }) {
   const now = useClock();
 
   return (
@@ -31,14 +33,13 @@ export function Header({ activeTab, isPaused, onTogglePause, onOpenSummaries }) 
         </div>
       </div>
 
+      <TabNav tabs={tabs} activeId={activeTabId} onSelect={onSelectTab} />
+
       <div className="header__right">
         <span className="header__date-chip">{formatDateLong(now)}</span>
         <span className="header__clock num">{formatClock(now)}</span>
         <button type="button" className="ctrl-btn" onClick={onTogglePause}>
           {isPaused ? "▶ Retomar" : "⏸ Pausar"}
-        </button>
-        <button type="button" className="ctrl-btn" onClick={onOpenSummaries}>
-          🗂 Resumos anteriores
         </button>
         <button
           type="button"
