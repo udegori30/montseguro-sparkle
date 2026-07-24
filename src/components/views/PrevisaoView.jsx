@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useDashboardData } from "../../context/DashboardDataContext.jsx";
+import { useEditableGoals } from "../../hooks/useEditableGoals.js";
 import { Avatar } from "../common/Avatar.jsx";
 import { formatCurrency } from "../../utils/format.js";
 import "./shared.css";
@@ -8,7 +9,7 @@ import "./PrevisaoView.css";
 
 const BLOCK_SIZE = 9;
 
-function PrevisaoBlock({ title, rows, startRank }) {
+function PrevisaoBlock({ title, rows, startRank, onEditSigned, onEditDeployed }) {
   return (
     <div className="goal-table-wrap previsao-table-wrap">
       <h3 className="goal-table__title">{title}</h3>
@@ -31,11 +32,33 @@ function PrevisaoBlock({ title, rows, startRank }) {
                 </td>
                 <td className="previsao-table__cell">
                   <strong className="previsao-table__value">{formatCurrency(row.signed)}</strong>
-                  <span className="previsao-table__goal">Demanda: {formatCurrency(row.signedGoal)}</span>
+                  <span className="previsao-table__goal">
+                    Demanda: {formatCurrency(row.signedGoal)}
+                    <button
+                      type="button"
+                      className="previsao-table__edit-btn"
+                      onClick={() => onEditSigned(row.id, row.signedGoal)}
+                      title="Editar demanda de assinados"
+                      aria-label="Editar demanda de assinados"
+                    >
+                      ✎
+                    </button>
+                  </span>
                 </td>
                 <td className="previsao-table__cell">
                   <strong className="previsao-table__value">{formatCurrency(row.deployed)}</strong>
-                  <span className="previsao-table__goal">Demanda: {formatCurrency(row.deployedGoal)}</span>
+                  <span className="previsao-table__goal">
+                    Demanda: {formatCurrency(row.deployedGoal)}
+                    <button
+                      type="button"
+                      className="previsao-table__edit-btn"
+                      onClick={() => onEditDeployed(row.id, row.deployedGoal)}
+                      title="Editar demanda de implantados"
+                      aria-label="Editar demanda de implantados"
+                    >
+                      ✎
+                    </button>
+                  </span>
                 </td>
               </tr>
             ))}
@@ -48,9 +71,11 @@ function PrevisaoBlock({ title, rows, startRank }) {
 
 // Aba "Previsao | Mes": ranking de consultores por previsao do mes
 // (assinado + implantado), com a demanda de cada estagio exibida abaixo do
-// valor. Dividido em 2 blocos de 9 consultores para caber lado a lado.
+// valor e editavel via o botao de lapis. Dividido em 2 blocos de 9
+// consultores para caber lado a lado.
 export function PrevisaoView() {
   const { consultants } = useDashboardData();
+  const { getGoal, setGoal } = useEditableGoals();
 
   const rows = useMemo(
     () =>
@@ -59,13 +84,25 @@ export function PrevisaoView() {
           id: consultant.id,
           name: consultant.name,
           signed: consultant.monthSigned,
-          signedGoal: consultant.signedGoal,
+          signedGoal: getGoal(consultant.id, "signed", consultant.signedGoal),
           deployed: consultant.monthRevenue,
-          deployedGoal: consultant.monthlyGoal,
+          deployedGoal: getGoal(consultant.id, "deployed", consultant.monthlyGoal),
         }))
         .sort((a, b) => b.signed + b.deployed - (a.signed + a.deployed)),
-    [consultants],
+    [consultants, getGoal],
   );
+
+  function handleEditGoal(period, periodLabel) {
+    return (consultantId, currentValue) => {
+      const input = window.prompt(`Nova demanda de ${periodLabel} (R$):`, String(currentValue));
+      if (input === null) return;
+      const parsed = Number(input.replace(/[^\d]/g, ""));
+      if (Number.isFinite(parsed) && parsed > 0) setGoal(consultantId, period, parsed);
+    };
+  }
+
+  const handleEditSigned = handleEditGoal("signed", "assinados");
+  const handleEditDeployed = handleEditGoal("deployed", "implantados");
 
   const firstBlock = rows.slice(0, BLOCK_SIZE);
   const secondBlock = rows.slice(BLOCK_SIZE, BLOCK_SIZE * 2);
@@ -75,11 +112,19 @@ export function PrevisaoView() {
       <div className="section">
         <h2 className="section-title">Ranking de Consultores por Previsão</h2>
         <div className="previsao-blocks">
-          <PrevisaoBlock title="Previsão · Mês (1-9)" rows={firstBlock} startRank={1} />
+          <PrevisaoBlock
+            title="Previsão · Mês (1-9)"
+            rows={firstBlock}
+            startRank={1}
+            onEditSigned={handleEditSigned}
+            onEditDeployed={handleEditDeployed}
+          />
           <PrevisaoBlock
             title="Previsão · Mês (10-18)"
             rows={secondBlock}
             startRank={BLOCK_SIZE + 1}
+            onEditSigned={handleEditSigned}
+            onEditDeployed={handleEditDeployed}
           />
         </div>
       </div>

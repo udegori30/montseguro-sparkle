@@ -14,9 +14,28 @@
 }
 
 .previsao-table__goal {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   margin-top: 0.15rem;
   font-size: 0.68rem;
   font-weight: 500;
   color: var(--text-muted);
+}
+
+.previsao-table__edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.68rem;
+  line-height: 1;
+  padding: 1px 3px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.previsao-table__edit-btn:hover {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
