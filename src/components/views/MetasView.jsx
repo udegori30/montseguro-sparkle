@@ -28,8 +28,14 @@ function ChartTooltip({ active, payload, label }) {
     <div className="metas-tooltip">
       <strong>{label}</strong>
       <span>{formatCurrency(point.revenue)} de resultado no dia</span>
-      <span>{formatNumber(point.contractsSigned)} contratos assinados</span>
-      <span>{formatNumber(point.contractsDeployed)} contratos implantados</span>
+      <span>
+        {formatCurrency(point.contractsSignedValue)} · {formatNumber(point.contractsSigned)} contratos
+        assinados
+      </span>
+      <span>
+        {formatCurrency(point.contractsDeployedValue)} · {formatNumber(point.contractsDeployed)} contratos
+        implantados
+      </span>
       {trend && (
         <span className={trend.className}>
           {trend.symbol} {formatPercent(Math.abs(point.dayOverDayPct), 1)} vs. dia anterior

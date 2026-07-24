@@ -152,7 +152,9 @@ function buildGoalsEvolution() {
       goalPct: Number(goalPct.toFixed(1)),
       revenue: randomInt(20000, 60000),
       contractsSigned: randomInt(15, 45),
+      contractsSignedValue: randomInt(15000, 45000),
       contractsDeployed: randomInt(10, 35),
+      contractsDeployedValue: randomInt(10000, 35000),
     });
   }
   return points;
