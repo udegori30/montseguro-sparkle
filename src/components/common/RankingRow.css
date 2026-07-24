@@ -1,8 +1,11 @@
 .rank-row {
   display: grid;
-  grid-template-columns: 26px 30px 44px minmax(0, 1fr) auto;
+  /* Coluna do nome limitada (nao 1fr): o valor fica logo apos o nome em vez
+     de "grudado" na borda direita da linha. */
+  grid-template-columns: 26px 30px 44px minmax(0, 190px) auto;
+  justify-content: start;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
   min-height: 64px;
   box-sizing: border-box;
   padding: 0.5rem 0.8rem;

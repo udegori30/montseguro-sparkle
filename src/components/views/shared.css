@@ -49,12 +49,6 @@
   .lead-split {
     grid-template-columns: 0.85fr 1.15fr;
   }
-
-  /* Com menos largura disponivel, a lista completa fica em 1 coluna em vez
-     de 2 - mais legivel do que espremer nome+avatar+valor em ~380px. */
-  .lead-split .ranking-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .section-title {
