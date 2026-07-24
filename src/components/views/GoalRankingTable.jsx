@@ -35,8 +35,8 @@ export function GoalRankingTable({ title, demandLabel, rows, onEditDemand }) {
                       type="button"
                       className="goal-table__edit-btn"
                       onClick={() => onEditDemand(row.id, row.demand)}
-                      title="Editar meta"
-                      aria-label="Editar meta"
+                      title="Editar demanda"
+                      aria-label="Editar demanda"
                     >
                       ✎
                     </button>

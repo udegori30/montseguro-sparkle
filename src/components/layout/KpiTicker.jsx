@@ -14,7 +14,7 @@ function buildItems(kpis) {
     { label: "Leads em aberto", value: formatNumber(kpis.openLeads) },
     { label: "Leads quentes", value: formatNumber(kpis.hotLeads) },
     { label: "Faturamento do time", value: formatCurrency(kpis.teamRevenue) },
-    { label: "Meta coletiva", value: formatPercent(kpis.collectiveGoalPct) },
+    { label: "Demanda coletiva", value: formatPercent(kpis.collectiveGoalPct) },
     { label: "Líder atual", value: kpis.currentLeader },
   ];
 }

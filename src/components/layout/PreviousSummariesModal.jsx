@@ -22,7 +22,7 @@ export function PreviousSummariesModal({ onClose }) {
             <div className="summaries-modal__row" key={day.date}>
               <span className="summaries-modal__date">{day.date}</span>
               <span className="summaries-modal__revenue">{formatCurrency(day.revenue)}</span>
-              <span className="summaries-modal__goal">{formatPercent(day.goalPct)} da meta</span>
+              <span className="summaries-modal__goal">{formatPercent(day.goalPct)} da demanda</span>
             </div>
           ))}
         </div>

@@ -44,7 +44,7 @@ export function GeralView() {
   const changes = useRankingChanges(ranking);
 
   function handleEditGoal() {
-    const input = window.prompt("Nova meta de faturamento dos times (R$):", String(goalValue));
+    const input = window.prompt("Nova demanda de faturamento dos times (R$):", String(goalValue));
     if (input === null) return;
     const parsed = Number(input.replace(/[^\d]/g, ""));
     if (Number.isFinite(parsed) && parsed > 0) setGoalOverride(parsed);
@@ -57,7 +57,7 @@ export function GeralView() {
           featured
           label="Faturamento dos Times · Implantado"
           value={formatCurrency(summary.revenueTeams)}
-          subtitle={`${formatPercent(goalPct)} da meta de ${formatCurrency(goalValue)}`}
+          subtitle={`${formatPercent(goalPct)} da demanda de ${formatCurrency(goalValue)}`}
           progress={goalPct}
           onEditGoal={handleEditGoal}
         />

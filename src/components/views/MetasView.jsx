@@ -74,7 +74,7 @@ export function MetasView() {
 
   function handleEditDemand(period, periodLabel) {
     return (consultantId, currentValue) => {
-      const input = window.prompt(`Nova meta ${periodLabel} (R$):`, String(currentValue));
+      const input = window.prompt(`Nova demanda ${periodLabel} (R$):`, String(currentValue));
       if (input === null) return;
       const parsed = Number(input.replace(/[^\d]/g, ""));
       if (Number.isFinite(parsed) && parsed > 0) setGoal(consultantId, period, parsed);
@@ -83,7 +83,7 @@ export function MetasView() {
 
   function handleEditCollectiveGoal(currentValue, label, setOverride) {
     return () => {
-      const input = window.prompt(`Nova meta de ${label} (R$):`, String(currentValue));
+      const input = window.prompt(`Nova demanda de ${label} (R$):`, String(currentValue));
       if (input === null) return;
       const parsed = Number(input.replace(/[^\d]/g, ""));
       if (Number.isFinite(parsed) && parsed > 0) setOverride(parsed);
@@ -97,7 +97,7 @@ export function MetasView() {
           featured
           label="Faturamento do Time · Implantado | Mês"
           value={formatCurrency(summary.revenueTeams)}
-          subtitle={`${formatPercent(monthlyGoalPct)} da meta de ${formatCurrency(monthlyGoalValue)}`}
+          subtitle={`${formatPercent(monthlyGoalPct)} da demanda de ${formatCurrency(monthlyGoalValue)}`}
           progress={monthlyGoalPct}
           onEditGoal={handleEditCollectiveGoal(monthlyGoalValue, "faturamento mensal", setMonthlyGoalOverride)}
         />
@@ -105,7 +105,7 @@ export function MetasView() {
           featured
           label="Faturamento do Time · Implantado | Trimestre"
           value={formatCurrency(quarterlyAchieved)}
-          subtitle={`${formatPercent(quarterlyGoalPct)} da meta de ${formatCurrency(quarterlyGoalValue)}`}
+          subtitle={`${formatPercent(quarterlyGoalPct)} da demanda de ${formatCurrency(quarterlyGoalValue)}`}
           progress={quarterlyGoalPct}
           onEditGoal={handleEditCollectiveGoal(
             quarterlyGoalValue,
@@ -116,16 +116,16 @@ export function MetasView() {
       </div>
 
       <div className="section">
-        <h2 className="section-title">Ranking de Consultores por Meta</h2>
+        <h2 className="section-title">Ranking de Consultores por Demanda</h2>
         <div className="metas-goal-tables">
           <GoalRankingTable
-            title="Meta Mensal"
+            title="Demanda Mensal"
             demandLabel="Demanda/Mês"
             rows={monthlyRows}
             onEditDemand={handleEditDemand("monthly", "mensal")}
           />
           <GoalRankingTable
-            title="Meta Trimestral"
+            title="Demanda Trimestral"
             demandLabel="Demanda/Trimestre"
             rows={quarterlyRows}
             onEditDemand={handleEditDemand("quarterly", "trimestral")}

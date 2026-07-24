@@ -36,7 +36,7 @@ export const TABS = [
   },
   {
     id: "metas",
-    label: "Evolução de Metas",
+    label: "Evolução de Demandas",
     subtitle: "Dashboard",
     accent: "#eab308",
     accentRgb: "234, 179, 8",

@@ -13,8 +13,8 @@ export function KpiCard({ label, value, subtitle, progress, onEditGoal, featured
             type="button"
             className="kpi-card__edit"
             onClick={onEditGoal}
-            aria-label="Editar meta"
-            title="Editar meta"
+            aria-label="Editar demanda"
+            title="Editar demanda"
           >
             ✎
           </button>
