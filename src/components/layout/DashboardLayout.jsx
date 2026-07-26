@@ -36,6 +36,8 @@ export function DashboardLayout() {
   const [isChromePinned, setChromePinned] = useState(false);
   const [isChromeHovering, setChromeHovering] = useState(false);
   const isChromeVisible = isChromePinned || isChromeHovering;
+  const [celebrationsPaused, setCelebrationsPaused] = useState(false);
+  const toggleCelebrations = useCallback(() => setCelebrationsPaused((prev) => !prev), []);
 
   const handleAdvance = useCallback(
     (nextId) => navigate(`/${nextId}`, { replace: true }),
@@ -82,6 +84,8 @@ export function DashboardLayout() {
             <Header
               isPaused={isPaused}
               onTogglePause={togglePause}
+              celebrationsPaused={celebrationsPaused}
+              onToggleCelebrations={toggleCelebrations}
               tabs={TABS}
               activeTabId={activeTab.id}
               onSelectTab={handleSelectTab}
@@ -110,7 +114,7 @@ export function DashboardLayout() {
         )}
       </main>
 
-      <CelebrationOverlay />
+      <CelebrationOverlay paused={celebrationsPaused} />
     </div>
   );
 }

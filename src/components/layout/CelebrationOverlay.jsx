@@ -16,20 +16,28 @@ const STAGE_META = {
 // Take-over em tela cheia disparado por eventos ao vivo de assinatura/
 // implantacao (ver DashboardDataContext -> state.celebration). Mostra a foto
 // do consultor, o valor, o tipo de contrato e o escudo do time como fundo.
-export function CelebrationOverlay() {
+export function CelebrationOverlay({ paused = false }) {
   const { celebration, consultants, teams } = useDashboardData();
   const { photos } = useConsultantPhotos();
   const { crests } = useTeamCrests();
   const [current, setCurrent] = useState(null);
   const timeoutRef = useRef(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
-    if (!celebration) return undefined;
+    if (!celebration || pausedRef.current) return undefined;
     clearTimeout(timeoutRef.current);
     setCurrent(celebration);
     timeoutRef.current = setTimeout(() => setCurrent(null), VISIBLE_MS + FADE_MS);
     return () => clearTimeout(timeoutRef.current);
   }, [celebration]);
+
+  useEffect(() => {
+    if (!paused) return;
+    clearTimeout(timeoutRef.current);
+    setCurrent(null);
+  }, [paused]);
 
   if (!current) return null;
 

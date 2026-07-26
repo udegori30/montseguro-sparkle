@@ -14,7 +14,15 @@ function handleExit() {
 
 // Regiao 1 do layout: titulo do app, as abas de navegacao (na mesma linha,
 // para economizar altura) e as acoes de pausar e sair.
-export function Header({ isPaused, onTogglePause, tabs, activeTabId, onSelectTab }) {
+export function Header({
+  isPaused,
+  onTogglePause,
+  celebrationsPaused,
+  onToggleCelebrations,
+  tabs,
+  activeTabId,
+  onSelectTab,
+}) {
   const now = useClock();
 
   return (
@@ -32,6 +40,14 @@ export function Header({ isPaused, onTogglePause, tabs, activeTabId, onSelectTab
         <span className="header__clock num">{formatClock(now)}</span>
         <button type="button" className="ctrl-btn" onClick={onTogglePause}>
           {isPaused ? "▶ Retomar" : "⏸ Pausar"}
+        </button>
+        <button
+          type="button"
+          className="ctrl-btn"
+          onClick={onToggleCelebrations}
+          title={celebrationsPaused ? "Retomar animações de comemoração" : "Pausar animações de comemoração"}
+        >
+          {celebrationsPaused ? "▶ 🎉" : "⏸ 🎉"}
         </button>
         <button
           type="button"
